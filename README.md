@@ -176,7 +176,15 @@ RePatch/
 - Operating System: Linux (Ubuntu/Debian distribution)
 - Free Storage: >= 15 GB
 
-## Running the Tool
+## Running RePatch
+
+You can run the **RePatch** tool using one of two approaches:
+
+1. **Locally on your machine**, or
+2. **Using Docker**.
+
+The instructions below guide you through running the tool locally. If you prefer a containerized setup, please refer to the [`docker`](docker) directory, which includes a dedicated README with detailed instructions. Regardless of the method you choose, ensure you have reviewed and fulfilled the [prerequisites](#prerequisites) section above.
+
 
 ### 1. Clone and build RefactoringMiner 
 The lastest version of RefactoringMiner is [here](https://github.com/tsantalis/RefactoringMiner). However, for this project, we used RefactoringMiner 2.2 found [here](https://github.com/manuelohrndorf/com.github.tsantalis.refactoringminer). 
@@ -217,13 +225,74 @@ Follow the steps below to run the experiment:
 The data from the integration pipeline will be stored in the database, `refactoring_aware_integration_repatch`. `RePatch` will create the database if it does not already exist. Finally, use the scripts in `analysis` directory to get tables and plots from the data.
 
 ## Reproducing the Results in the Paper
-Use the refactoring aware patch integration dump found [here](database-dump) to populate the `refactoring_aware_integration` database. Once the database is populated, you can use the SQL scripts provide in `script` directory of this project. We provide SQL scripts, `CSV` files and notebook to support reproduciblity of the results reported in the paper. This can be found in the `analysis` directory. If you want to regenerate the CSV files, setup and populate the database with the data provide in `database` directory.
+Use the refactoring aware patch integration dump found [here](database-dump) to populate the `refactoring_aware_integration` database. Once the database is populated, you can use the SQL scripts provide in `script` directory of this project. We provide SQL scripts, `CSV` files and notebook to support reproduciblity of the results reported in the paper. This can be found in the `analysis` directory. If you want to regenerate the CSV files, setup and populate the database with the data provide in `database-dump` directory.
 
 #### RQ1: How often do source variant bug-fix patches fail to apply cleanly to target variants using Git’s cherry-pick?
+This SQL query provides a summary of merge outcomes for each project fork in the dataset (**See TABLE II in the paper**). It joins the `project` and `patch` tables from the `refactoring_aware_integration` schema to aggregate merge statistics per fork, identified by `fork_name` and `fork_url`. For each fork, it calculates the total number of merge operations (`MO`), and classifies them as either successful (`Passed`) or conflicting (`Failed`) based on the `is_conflicting` flag. The results are ordered in descending order by the number of merge operations, highlighting the most actively evaluated forks.
+
+```sql
+SELECT 
+    p.fork_name AS Target, p.fork_url AS URL,
+    COUNT(pa.id) AS MO,
+    SUM(CASE WHEN pa.is_conflicting = 0 THEN 1 ELSE 0 END) AS Passed,
+    SUM(CASE WHEN pa.is_conflicting = 1 THEN 1 ELSE 0 END) AS Failed
+FROM 
+    refactoring_aware_integration.project p
+JOIN 
+    refactoring_aware_integration.patch pa ON p.id = pa.project_id
+GROUP BY 
+    p.fork_name, p.fork_url
+ORDER BY 
+    MO DESC;
+```
 
 #### RQ2: What proportion of cherry-pick failures are attributable to refactoring operations (e.g., method / class renaming or moving)?
+This SQL query retrieves detailed information about refactoring instances from the `refactoring_aware_integration` schema by linking the `refactoring`, `patch`, and `project` tables. It selects the type of refactoring performed (`refactoring_type`), the associated `project_id` and `patch_id`, and the corresponding project fork name (`fork_name`). By joining the tables through their shared identifiers, the query associates each refactoring instance with its specific project and patch context, providing a foundation for analyzing refactoring activities across different forks. The result can be observed in file: `refactorings_project.csv`
+
+```sql
+SELECT refactoring_type, refactoring.project_id, refactoring.patch_id, project.fork_name
+FROM refactoring_aware_integration.refactoring, patch, project
+WHERE refactoring.patch_id = patch.id AND refactoring.project_id = project.id
+```
+<p align="center">
+  <img src="figures/top_5_refactoring_per_project_h.png" alt="System Architecture" width="600"/>
+  <br>
+  <em>Figure 3: Top 5 refactoring types associated with cherry-pick failures, grouped by refactoring type (X-axis) and target variant (legend). Y-axis uses a log scale to normalize project size variability and improve comparability across targets.</em>
+</p>
+
 
 #### RQ3: Can a refactoring-aware integration approach reduce merge conflicts and increase the success rate of applying patches across divergent variants?
+This SQL query quantifies how the number of conflicting files changes when using RePatch compared to Git-CherryPick for the same merge attempts. It joins the `merge_result` table on `merge_commit_id`, `project_id`, and `patch_id` to pair equivalent merges handled by both tools. It then categorizes each comparison into one of three outcomes: cases where RePatch resulted in fewer conflicting files (`reduced_conflicts`), more conflicting files (`increased_conflicts`), or no change (`unchanged_conflicts`). These aggregated counts provide an overall picture of RePatch’s impact on conflict reduction relative to Git-CherryPick. **See TABLE III in the paper.**
+
+```sql
+SELECT
+  COUNT(CASE WHEN rep.total_conflicting_files < git.total_conflicting_files THEN 1 END) AS reduced_conflicts,
+  COUNT(CASE WHEN rep.total_conflicting_files > git.total_conflicting_files THEN 1 END) AS increased_conflicts,
+  COUNT(CASE WHEN rep.total_conflicting_files = git.total_conflicting_files THEN 1 END) AS unchanged_conflicts
+FROM merge_result AS git
+JOIN merge_result AS rep 
+  ON git.merge_commit_id = rep.merge_commit_id
+  AND git.project_id = rep.project_id
+  AND git.patch_id = rep.patch_id
+WHERE git.merge_tool = 'Git-CherryPick'
+  AND rep.merge_tool = 'RePatch';
+```
+
+This SQL query compares the extent of merge conflicts—measured by the number of conflicting lines of code—between Git-CherryPick and RePatch for identical merge scenarios in the `merge_result` table. By joining on `merge_commit_id`, `project_id`, and `patch_id`, the query ensures a direct comparison of the same merge instance handled by both tools. It then counts how many times RePatch resulted in fewer (`repatch_fewer_conflicting_loc`), more (`repatch_more_conflicting_loc`), or equal (`conflicting_loc_equal`) lines of conflicting code compared to Git-CherryPick. This breakdown helps assess whether RePatch consistently reduces the complexity of merge conflicts at the line-of-code (LOC) level. **See TABLE III in the paper.**
+
+```sql
+SELECT
+  COUNT(CASE WHEN rep.total_conflicting_loc < git.total_conflicting_loc THEN 1 END) AS repatch_fewer_conflicting_loc,
+  COUNT(CASE WHEN rep.total_conflicting_loc > git.total_conflicting_loc THEN 1 END) AS repatch_more_conflicting_loc,
+  COUNT(CASE WHEN rep.total_conflicting_loc = git.total_conflicting_loc THEN 1 END) AS conflicting_loc_equal
+FROM refactoring_aware_integration.merge_result AS git
+JOIN refactoring_aware_integration.merge_result AS rep 
+  ON git.merge_commit_id = rep.merge_commit_id
+  AND git.project_id = rep.project_id
+  AND git.patch_id = rep.patch_id
+WHERE git.merge_tool = 'Git-CherryPick'
+  AND rep.merge_tool = 'RePatch';
+```
 
 ## Contributing
 
