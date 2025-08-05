@@ -34,6 +34,110 @@ Below is an overview of the main files and directories in this project:
 
 Each file and directory is organized to support modular development, testing, and easy usage of the patch integration tool.
 
+## Project Structure
+
+This section provides an overview of the key components and files in the RePatch repository.
+
+### Project Metadata
+
+These files define the repository's license, usage instructions, and ignore rules:
+
+* `README.md`: Main documentation and overview of the project.
+* `LICENSE`, `COPYING`: Licensing details (likely GPL or similar).
+* `.gitignore`: Specifies files and folders to exclude from version control.
+
+### Build System
+
+RePatch uses **Gradle** for building and dependency management:
+
+* `build.gradle`: Main Gradle build configuration.
+* `settings.gradle`: Project inclusion settings.
+* `gradlew`, `gradle/wrapper/*`: Gradle wrapper scripts and binaries.
+* `gradle.properties`: Custom build properties.
+
+### CI / GitHub Actions
+
+* `.github/workflows/gradle.yml`: Defines the GitHub Actions pipeline to automatically build and test the project using Gradle.
+
+### Docker Environment
+
+Located in `docker/dev-container-repatch`, this directory contains a ready-to-use Dockerized desktop environment with tools for running and debugging RePatch:
+
+* `Dockerfile`: Builds a full GUI development container with Git, Java, IntelliJ, and RefactoringMiner.
+* `docker-compose.yml`: Orchestrates the dev container (and optionally MySQL/phpMyAdmin).
+* `Dockerfiles/add_resolution.sh`, `add_resolutions.sh`: Helper scripts for screen resolution setup inside the container.
+* `README.md`: Usage instructions for the dev environment.
+
+### Core Integration Logic
+
+The heart of RePatch’s patch integration functionality lives in:
+
+* `IntegrationPipeline.java`: Main entry point that coordinates patch identification and transfer.
+* `RePatchIntegration.java`: Contains logic for applying cherry-picked commits, detecting failures, and invoking semantic alignment.
+
+### Data Models
+
+Defines the data structures used during integration, conflict analysis, and result tracking:
+
+* `ComparisonResult.java`, `ConflictBlockData.java`, `ConflictingFileData.java`, `FileDetails.java`, `SourceFile.java`: Represent structured data about file states, conflict regions, and integration metadata.
+
+### Database Layer
+
+Handles persistence of patch analysis and conflict metrics:
+
+* `ConflictBlock.java`, `ConflictingFile.java`, `DatabaseUtils.java`, `FileStatistics.java`, `MergeCommit.java`: Define database entities and helper utilities for storing and querying conflict information.
+  
+```
+RePatch/
+├── LICENSE                          # License file (e.g., GPL or similar)
+├── COPYING                          # GNU license copy (if applicable)
+├── README.md                        # Main project documentation
+├── build.gradle                     # Gradle build script
+├── settings.gradle                  # Gradle project settings
+├── gradle.properties                # Build configuration properties
+├── github-autho.properties          # GitHub access credentials (likely excluded from Git)
+├── database.properties              # DB config for persisting conflict metrics
+├── .gitignore                       # Git ignore rules
+├── .github
+│   └── workflows
+│       └── gradle.yml              # GitHub Actions CI config
+├── docker
+│   └── dev-container-repatch       # GUI-based dev environment
+│       ├── Dockerfile              # Main Docker image build script
+│       ├── docker-compose.yml      # Compose file for webtop + services
+│       ├── README.md               # Setup instructions
+│       └── Dockerfiles
+│           ├── add_resolution.sh   # Adds a single screen resolution
+│           └── add_resolutions.sh  # Adds multiple resolutions
+├── gradle/
+│   └── wrapper/
+│       ├── gradle-wrapper.jar      # Gradle wrapper binary
+│       └── gradle-wrapper.properties # Wrapper settings
+├── src
+│   └── main
+│       └── java
+│           └── edu
+│               └── unlv
+│                   └── cs
+│                       └── evol
+│                           └── integration
+│                               ├── IntegrationPipeline.java      # Main CLI entrypoint
+│                               ├── RePatchIntegration.java       # Core patch application logic
+│                               ├── data/
+│                               │   ├── ComparisonResult.java     # Structure for analysis result
+│                               │   ├── ConflictBlockData.java    # Structure for conflict block info
+│                               │   ├── ConflictingFileData.java  # Structure for file-level conflict info
+│                               │   ├── FileDetails.java          # Captures full file metadata
+│                               │   └── SourceFile.java           # Represents a source variant file
+│                               └── database/
+│                                   ├── ConflictBlock.java        # Database model for conflict blocks
+│                                   ├── ConflictingFile.java      # Database model for conflicting files
+│                                   ├── DatabaseUtils.java        # DB connection helpers
+│                                   ├── FileStatistics.java       # File-level integration stats
+│                                   └── MergeCommit.java          # Represents merge commit metadata
+```
+
+
 ## Getting Started
 
 ### Prerequisites
@@ -41,9 +145,14 @@ Each file and directory is organized to support modular development, testing, an
 - Java 11
 - Maven 3.6 or higher
 - Git
-- MySQL
+- MySQL Database >=8.0
 - MySQL Workbench or PHPMyAdmin (Optional)
 - Intellij IDEA 2020.1.2 Community Edition
+- Python >= 3.10
+- Processor: CPU 1.18 GHZ or greater
+- RAM: >=16 GB
+- Operating System: Linux (Ubuntu/Debian distribution)
+- Free Storage: >= 15 GB
 
 ## Running the Tool
 
@@ -62,7 +171,7 @@ Clone this project (`git clone https://github.com/unlv-evol/Repatch.git`) and op
 
 ## Reproducing the Results in the Paper
 Use the refactoring aware patch integration dump found [here]() to populate the *refactoring_aware_integration* database. Once the database is populated, you can use the SQL scripts provide in `script` directory of this project.
-#### RQ1: RQ1: How often do source variant bug-fix patches fail to apply cleanly to target variants using Git’s cherry-pick?
+#### RQ1: How often do source variant bug-fix patches fail to apply cleanly to target variants using Git’s cherry-pick?
 
 #### RQ2: What proportion of cherry-pick failures are attributable to refactoring operations (e.g., method / class renaming or moving)?
 
