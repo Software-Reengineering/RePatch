@@ -115,26 +115,48 @@ RePatch/
 │       └── gradle-wrapper.properties # Wrapper settings
 ├── src
 │   └── main
-│       └── java
-│           └── edu
-│               └── unlv
-│                   └── cs
-│                       └── evol
-│                           └── integration
-│                               ├── IntegrationPipeline.java      # Main CLI entrypoint
-│                               ├── RePatchIntegration.java       # Core patch application logic
-│                               ├── data/
-│                               │   ├── ComparisonResult.java     # Structure for analysis result
-│                               │   ├── ConflictBlockData.java    # Structure for conflict block info
-│                               │   ├── ConflictingFileData.java  # Structure for file-level conflict info
-│                               │   ├── FileDetails.java          # Captures full file metadata
-│                               │   └── SourceFile.java           # Represents a source variant file
-│                               └── database/
-│                                   ├── ConflictBlock.java        # Database model for conflict blocks
-│                                   ├── ConflictingFile.java      # Database model for conflicting files
-│                                   ├── DatabaseUtils.java        # DB connection helpers
-│                                   ├── FileStatistics.java       # File-level integration stats
-│                                   └── MergeCommit.java          # Represents merge commit metadata
+│       └── java/edu/unlv/cs/evol
+│            └── integration
+│                ├── IntegrationPipeline.java      # Main CLI entrypoint
+│                ├── RePatchIntegration.java       # Core patch application logic
+│                ├── data/
+│                    ├── ComparisonResult.java     # Structure for analysis result
+│                    │   ├── ConflictBlockData.java    # Structure for conflict block info
+│                    │   ├── ConflictingFileData.java  # Structure for file-level conflict info
+│                    │   ├── FileDetails.java          # Captures full file metadata
+│                    │   └── SourceFile.java           # Represents a source variant file
+│                 └── database/
+│                    ├── ConflictBlock.java        # Database model for conflict blocks
+│                    ├── ConflictingFile.java      # Database model for conflicting files
+│                    ├── DatabaseUtils.java        # DB connection helpers
+│                    ├── FileStatistics.java       # File-level integration stats
+│                    └── MergeCommit.java          # Represents merge commit metadata
+│                 └── utils/
+│                    ├── EvaluationUtils.java        # Database model for conflict blocks
+│                    ├── GitHubUtils.java      
+│                    ├── GitUtils.java        
+│                    └── Utils.java
+│            └── repatch
+│               ├── matrix/           # Conflict matrix modeling and resolution
+│               │   ├── logicCells/   # Matrix cell types for conflicting refactorings
+│               │   └── receivers/    # Classes that receive/invert refactorings
+│               ├── refactoringObjects/       # Data classes representing refactorings
+│               │   └── typeObjects/          # Types: methods, classes, parameters
+│               ├── replayOperations/         # Classes to replay transformations
+│               ├── invertOperations/         # Classes to invert transformations
+│               └── utils/           # Git helpers, utility functions
+│   │   └── resources/
+│   │       ├── META-INF/             # Plugin configuration
+│   │       ├── complete_data/        # Real-world patch/project integration data
+│   │       ├── sample_data/          # Sample integration scenarios
+│   │       ├── repatch_database/     # Database configuration
+│   │       └── create_integration_schema.sql  # SQL setup script
+│   └── test/
+│       └── resources/
+│           ├── extractMethod*        # Test cases for extract method refactorings
+│           ├── moveRename*           # Test cases for class/method renaming/moving
+│           ├── rename*               # Method and class rename test data
+│           └── rePatchTestData/     # Refactoring merge replay test cases
 ```
 
 
