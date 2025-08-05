@@ -21,21 +21,6 @@ When standard cherry-pick fails due to refactorings (e.g., method renaming or re
 
 ## Project Structure
 
-Below is an overview of the main files and directories in this project:
-
-- **src/**: Contains the Java source code for the patch integration tool.
-- **src/main/java/**: Main application logic, including patch analysis, integration, and conflict resolution modules.
-- **src/test/java/**: Unit and integration tests for the core functionality.
-- **pom.xml**: Maven configuration file specifying dependencies and build instructions.
-- **target/**: Directory where compiled classes and packaged JAR files are generated after building the project.
-- **README.md**: This documentation file.
-- **LICENSE**: The license file for the project (MIT License).
-- **.gitignore**: Specifies files and directories to be ignored by Git.
-
-Each file and directory is organized to support modular development, testing, and easy usage of the patch integration tool.
-
-## Project Structure
-
 This section provides an overview of the key components and files in the RePatch repository.
 
 ### Project Metadata
@@ -95,7 +80,7 @@ RePatch/
 ├── build.gradle                     # Gradle build script
 ├── settings.gradle                  # Gradle project settings
 ├── gradle.properties                # Build configuration properties
-├── github-autho.properties          # GitHub access credentials (likely excluded from Git)
+├── github-autho.properties          # GitHub access credentials (credentials excluded from Git)
 ├── database.properties              # DB config for persisting conflict metrics
 ├── .gitignore                       # Git ignore rules
 ├── .github
@@ -117,7 +102,7 @@ RePatch/
 │   └── main
 │       └── java/edu/unlv/cs/evol
 │            └── integration
-│                ├── IntegrationPipeline.java      # Main CLI entrypoint
+│                ├── IntegrationPipeline.java      # Main integration logic included
 │                ├── RePatchIntegration.java       # Core patch application logic
 │                ├── data/
 │                    ├── ComparisonResult.java     # Structure for analysis result
@@ -159,7 +144,6 @@ RePatch/
 │           └── rePatchTestData/     # Refactoring merge replay test cases
 ```
 
-
 ## Getting Started
 
 ### Prerequisites
@@ -200,7 +184,7 @@ You will need to add RefactoringMiner to your local maven repository to use it i
 Clone this project (`git clone https://github.com/unlv-evol/Repatch.git`) and open it in IntelliJ IDE. Wait for project to be indexed by IntelliJ. To build the project, click on build tab in the IntelliJ IDE and select `Build Project` to build RePatch.
 
 #### Edit configuration
-Edit the configuration tasks to have `:runIde -Pmode=integration -PdataPath=path -PevaluationProject=project`, where path is the path to the cloned test projects and project is the test project (target variant). Make sure to create the `path` directory.
+Edit the configuration tasks to have `:runIde -Pmode=integration -PdataPath=repatch-integration-projects -PevaluationProject=project`, where path is the path to the cloned test projects and project is the test project (target variant). **Make sure to create the `repatch-integration-projects` directory**.
 
 Edit the configuration tasks in the IntelliJ IDE under `Run | Edit Configurations` (more information can be found [here](https://www.jetbrains.com/help/idea/run-debug-configuration.html#create-permanent)) to have `:runIde` and include set `-Pmode=` to `integration`.
 Then, set `-PevaluationProject=` to the project (target variant) that you want to evaluate on. For example,
