@@ -191,8 +191,34 @@ You will need to add RefactoringMiner to your local maven repository to use it i
 ### 3. Build the project
 Clone this project (`git clone https://github.com/unlv-evol/Repatch.git`) and open it in IntelliJ IDE. Wait for project to be indexed by IntelliJ. To build the project, click on build tab in the IntelliJ IDE and select `Build Project` to build RePatch.
 
+#### Edit configuration
+Edit the configuration tasks to have `:runIde -Pmode=integration -PdataPath=path -PevaluationProject=project`, where path is the path to the cloned test projects and project is the test project (target variant). Make sure to create the `path` directory.
+
+Edit the configuration tasks in the IntelliJ IDE under `Run | Edit Configurations` (more information can be found [here](https://www.jetbrains.com/help/idea/run-debug-configuration.html#create-permanent)) to have `:runIde` and include set `-Pmode=` to `integration`.
+Then, set `-PevaluationProject=` to the project (target variant) that you want to evaluate on. For example,
+it would look like `-PevaluationProject=kafka` if you want to run integration on `linkedin/kafka`.
+
+**NB: Running the entire experiment takes more than 10 hour to complete. For this reason, provide a sample source -> target variant and 10 patches (pull requests), alongside the full dataset, to facilate quick testing of the tool/experiment. Both the test and full projects are located in: `src/main/resources` directory**. 
+
+Follow the steps below to run the experiment:
+
+1. Create a GitHub token and add it to `github-oauth.properties`. 
+   
+2. Add the corresponding integration project to the configuration in the IntelliJ IDE under `Run | Edit Configurations`. For example, `-PevaluationProject=kafka`. 
+
+3. RePatch will automatically clone the target variant and add the remote source variant. Once this is done stop the running project and open the integration project with the IntelliJ IDEA in a new window. 
+
+4. Wait for IntelliJ to build the cloned project, then close it.
+
+5. Now re-run the `RePatch` by clicking the `Run` button in the IntelliJ IDE.
+
+6. Wait for the integration pipeline to finish processing that project.
+
+The data from the integration pipeline will be stored in the database, `refactoring_aware_integration_repatch`. `RePatch` will create the database if it does not already exist. Finally, use the scripts in `analysis` directory to get tables and plots from the data.
+
 ## Reproducing the Results in the Paper
-Use the refactoring aware patch integration dump found [here]() to populate the *refactoring_aware_integration* database. Once the database is populated, you can use the SQL scripts provide in `script` directory of this project.
+Use the refactoring aware patch integration dump found [here](database-dump) to populate the `refactoring_aware_integration` database. Once the database is populated, you can use the SQL scripts provide in `script` directory of this project. We provide SQL scripts, `CSV` files and notebook to support reproduciblity of the results reported in the paper. This can be found in the `analysis` directory. If you want to regenerate the CSV files, setup and populate the database with the data provide in `database` directory.
+
 #### RQ1: How often do source variant bug-fix patches fail to apply cleanly to target variants using Git’s cherry-pick?
 
 #### RQ2: What proportion of cherry-pick failures are attributable to refactoring operations (e.g., method / class renaming or moving)?
