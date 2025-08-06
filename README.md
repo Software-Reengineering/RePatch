@@ -13,6 +13,12 @@ RePatch is a refactoring-aware patch integration tool designed to transfer bug-f
 
 When standard cherry-pick fails due to refactorings (e.g., method renaming or relocation), RePatch detects and temporarily inverts these structural changes using RefactoringMiner. This alignment enables the patch to be applied successfully. After integration, the original refactorings are replayed to preserve the target’s evolution history. This two-phase process improves patch portability across independently evolving codebases.
 
+
+
+> This work is accepted in the research track of The 25th IEEE International Conference on Source Code Analysis and Manipulation ([SCAM 2025)(https://conf.researchr.org/home/scam-2025)].
+> 
+> **Paper: Refactoring-Aware Patch Integration Across Structurally Divergent Java Forks (preprint is available [here](https://arixv.abs/xxx/xxxx)**)
+
 ## Features
 
 - **Refactoring Detection:** Identifies structural changes between codebases to improve patch application accuracy.
@@ -29,7 +35,7 @@ This section provides an overview of the key components and files in the RePatch
 These files define the repository's license, usage instructions, and ignore rules:
 
 * `README.md`: Main documentation and overview of the project.
-* `LICENSE`, `COPYING`: Licensing details (likely GPL or similar).
+* `LICENSE`, `COPYING`: Licensing details.
 * `.gitignore`: Specifies files and folders to exclude from version control.
 
 ### Build System
@@ -86,63 +92,51 @@ RePatch/
 ├── .gitignore                       # Git ignore rules
 ├── .github
 │   └── workflows
-│       └── gradle.yml              # GitHub Actions CI config
+│       └── gradle.yml                                  # GitHub Actions CI config
 ├── docker
-│   └── dev-container-repatch       # GUI-based dev environment
-│       ├── Dockerfile              # Main Docker image build script
-│       ├── docker-compose.yml      # Compose file for webtop + services
-│       ├── README.md               # Setup instructions
+│   └── dev-container-repatch                           # GUI-based dev environment
+│       ├── Dockerfile                                  # Main Docker image build script
+│       ├── docker-compose.yml                          # Compose file for webtop + services
+│       ├── README.md                                   # Setup instructions
 │       └── Dockerfiles
-│           ├── add_resolution.sh   # Adds a single screen resolution
-│           └── add_resolutions.sh  # Adds multiple resolutions
-├── gradle/
-│   └── wrapper/
-│       ├── gradle-wrapper.jar      # Gradle wrapper binary
-│       └── gradle-wrapper.properties # Wrapper settings
+├── gradle/                                             # Gradle wrapper configurations
 ├── src
 │   └── main
 │       └── java/edu/unlv/cs/evol
 │            └── integration
-│                ├── IntegrationPipeline.java      # Main integration logic included
-│                ├── RePatchIntegration.java       # Core patch application logic
+│                ├── IntegrationPipeline.java           # Main integration logic included
+│                ├── RePatchIntegration.java            # Core patch application logic
 │                ├── data/
-│                    ├── ComparisonResult.java     # Structure for analysis result
-│                    │   ├── ConflictBlockData.java    # Structure for conflict block info
-│                    │   ├── ConflictingFileData.java  # Structure for file-level conflict info
-│                    │   ├── FileDetails.java          # Captures full file metadata
-│                    │   └── SourceFile.java           # Represents a source variant file
+│                    ├── ComparisonResult.java          # Structure for analysis result
+│                    │   ├── ConflictBlockData.java     # Structure for conflict block info
+│                    │   ├── ConflictingFileData.java   # Structure for file-level conflict info
+│                    │   ├── FileDetails.java           # Captures full file metadata
+│                    │   └── SourceFile.java            # Represents a source variant file
 │                 └── database/
-│                    ├── ConflictBlock.java        # Database model for conflict blocks
-│                    ├── ConflictingFile.java      # Database model for conflicting files
-│                    ├── DatabaseUtils.java        # DB connection helpers
-│                    ├── FileStatistics.java       # File-level integration stats
-│                    └── MergeCommit.java          # Represents merge commit metadata
-│                 └── utils/
-│                    ├── EvaluationUtils.java        # Database model for conflict blocks
-│                    ├── GitHubUtils.java      
-│                    ├── GitUtils.java        
-│                    └── Utils.java
+│                    ├── ConflictBlock.java             # Database model for conflict blocks
+│                    ├── ConflictingFile.java           # Database model for conflicting files
+│                    ├── DatabaseUtils.java             # DB connection helpers
+│                    ├── FileStatistics.java            # File-level integration stats
+│                    └── MergeCommit.java               # Represents merge commit metadata
+│                 └── utils/                            # Helper functions
 │            └── repatch
-│               ├── matrix/           # Conflict matrix modeling and resolution
-│               │   ├── logicCells/   # Matrix cell types for conflicting refactorings
-│               │   └── receivers/    # Classes that receive/invert refactorings
-│               ├── refactoringObjects/       # Data classes representing refactorings
-│               │   └── typeObjects/          # Types: methods, classes, parameters
-│               ├── replayOperations/         # Classes to replay transformations
-│               ├── invertOperations/         # Classes to invert transformations
-│               └── utils/           # Git helpers, utility functions
+│               ├── matrix/                             # Conflict matrix modeling and resolution
+│               ├── refactoringObjects/                 # Data classes representing refactorings
+│               ├── replayOperations/                   # Classes to replay transformations
+│               ├── invertOperations/                   # Classes to invert transformations
+│               └── utils/                              # Git helpers, utility functions
 │   │   └── resources/
-│   │       ├── META-INF/             # Plugin configuration
-│   │       ├── complete_data/        # Real-world patch/project integration data
-│   │       ├── sample_data/          # Sample integration scenarios
-│   │       ├── repatch_database/     # Database configuration
-│   │       └── create_integration_schema.sql  # SQL setup script
+│   │       ├── META-INF/                               # Plugin configuration
+│   │       ├── complete_data/                          # Real-world patch/project integration data
+│   │       ├── sample_data/                            # Sample integration scenarios
+│   │       ├── repatch_database/                       # Database configuration
+│   │       └── create_integration_schema.sql           # SQL setup script
 │   └── test/
 │       └── resources/
-│           ├── extractMethod*        # Test cases for extract method refactorings
-│           ├── moveRename*           # Test cases for class/method renaming/moving
-│           ├── rename*               # Method and class rename test data
-│           └── rePatchTestData/     # Refactoring merge replay test cases
+│           ├── extractMethod*                          # Test cases for extract method refactorings
+│           ├── moveRename*                             # Test cases for class/method renaming/moving
+│           ├── rename*                                 # Method and class rename test data
+│           └── rePatchTestData/                        # Refactoring merge replay test cases
 ```
 
 ## Getting Started
@@ -210,7 +204,7 @@ Follow the steps below to run the experiment:
 The data from the integration pipeline will be stored in the database, `refactoring_aware_integration_repatch`. `RePatch` will create the database if it does not already exist. Finally, use the scripts in `analysis` directory to get tables and plots from the data.
 
 ## Reproducing the Results in the Paper
-Use the refactoring aware patch integration dump found [here](database-dump) to populate the `refactoring_aware_integration` database. Once the database is populated, you can use the SQL scripts provide in `script` directory of this project. We provide SQL scripts, `CSV` files and notebook to support reproduciblity of the results reported in the paper. This can be found in the `analysis` directory. If you want to regenerate the CSV files, setup and populate the database with the data provide in `database-dump` directory.
+Use the refactoring aware patch integration dump found [here](database-dump) to populate the `refactoring_aware_integration` database. Once the database is populated, we provide SQL scripts, `CSV` files and notebook to support reproduciblity of the results reported in the paper. This can be found in the `analysis` directory and also detailed in each research question below. If you want to regenerate the CSV files, setup and populate the database with the data provide in `database-dump` directory, and run each of the SQL query below. *For easy of use, we recommend using MySQL Workbench or any MySQL DBMS client of your choice*.
 
 #### RQ1: How often do source variant bug-fix patches fail to apply cleanly to target variants using Git’s cherry-pick?
 This SQL query provides a summary of merge outcomes for each project fork in the dataset (**See TABLE II in the paper**). It joins the `project` and `patch` tables from the `refactoring_aware_integration` schema to aggregate merge statistics per fork, identified by `fork_name` and `fork_url`. For each fork, it calculates the total number of merge operations (`MO`), and classifies them as either successful (`Passed`) or conflicting (`Failed`) based on the `is_conflicting` flag. The results are ordered in descending order by the number of merge operations, highlighting the most actively evaluated forks.
