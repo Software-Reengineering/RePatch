@@ -6,6 +6,8 @@
 [![FOSSA Status](https://app.fossa.com/api/projects/custom%2B46484%2Fgithub.com%2Funlv-evol%2FRePatch.svg?type=small)](https://app.fossa.com/projects/custom%2B46484%2Fgithub.com%2Funlv-evol%2FRePatch?ref=badge_small)
 [![SWH](https://archive.softwareheritage.org/badge/origin/https://doi.org/10.5281/zenodo.16756017/)](https://archive.softwareheritage.org/browse/origin/?origin_url=https://doi.org/10.5281/zenodo.16756017)
 [![SWH](https://archive.softwareheritage.org/badge/swh:1:dir:fc19605d3ac89e40bf5cac2ac84d07555da246e7/)](https://archive.softwareheritage.org/swh:1:dir:fc19605d3ac89e40bf5cac2ac84d07555da246e7;origin=https://doi.org/10.5281/zenodo.16756017;visit=swh:1:snp:fa4e4cd39c8344a1acb683767aff1f562f0572fe;anchor=swh:1:rel:47083a8f3bbc3db63ada27a31acb245972934ddb;path=/unlv-evol-RePatch-f89834b/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16756017.svg)](https://doi.org/10.5281/zenodo.16756017)
+
 
 ## Overview
 
