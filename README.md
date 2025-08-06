@@ -2,7 +2,11 @@
 
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/unlv-evol/RePatch/main)
 ![GitHub License](https://img.shields.io/github/license/unlv-evol/RePatch)
+[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B46484%2Fgithub.com%2Funlv-evol%2FRePatch.svg?type=shield&issueType=license)](https://app.fossa.com/projects/custom%2B46484%2Fgithub.com%2Funlv-evol%2FRePatch?ref=badge_shield&issueType=license)
 [![FOSSA Status](https://app.fossa.com/api/projects/custom%2B46484%2Fgithub.com%2Funlv-evol%2FRePatch.svg?type=small)](https://app.fossa.com/projects/custom%2B46484%2Fgithub.com%2Funlv-evol%2FRePatch?ref=badge_small)
+[![SWH](https://archive.softwareheritage.org/badge/origin/https://doi.org/10.5281/zenodo.16756017/)](https://archive.softwareheritage.org/browse/origin/?origin_url=https://doi.org/10.5281/zenodo.16756017)
+[![SWH](https://archive.softwareheritage.org/badge/swh:1:dir:fc19605d3ac89e40bf5cac2ac84d07555da246e7/)](https://archive.softwareheritage.org/swh:1:dir:fc19605d3ac89e40bf5cac2ac84d07555da246e7;origin=https://doi.org/10.5281/zenodo.16756017;visit=swh:1:snp:fa4e4cd39c8344a1acb683767aff1f562f0572fe;anchor=swh:1:rel:47083a8f3bbc3db63ada27a31acb245972934ddb;path=/unlv-evol-RePatch-f89834b/)
+
 ## Overview
 
 This project provides `RePatch` - a tool for refactoring-aware patch integration across structurally divergent Java forks. It automates the process of applying patches from one Java codebase to another, even when the codebases have diverged due to refactorings or structural changes. The tool aims to minimize manual effort and resolve conflicts intelligently, making it easier to maintain and synchronize multiple forks of a Java project.
@@ -157,6 +161,8 @@ RePatch/
 
 ## Running RePatch
 
+This section will get you through installation and execution of the RePatch tool. If you want to quickly reproduce the results in the paper without running the tool, kindly refer to "[Reproducing the Results in the Paper](#reproducing-the-results-in-the-paper)" section.
+
 You can run the **RePatch** tool using one of two approaches:
 
 1. **Locally on your machine**, or
@@ -185,9 +191,9 @@ Edit the configuration tasks in the IntelliJ IDE under `Run | Edit Configuration
 Then, set `-PevaluationProject=` to the project (target variant) that you want to evaluate on. For example,
 it would look like `-PevaluationProject=kafka` if you want to run integration on `linkedin/kafka`.
 
-**NB: Running the entire experiment takes more than 10 hour to complete. For this reason, provide a one source -> target variant (apache/kakfa -> linkedin/kafka) and 5 bugfix patches (pull requests), alongside the full dataset, to facilitate quick testing of the tool/experiment. Both the test and full projects are located in: `src/main/resources` (sample_data and completed_data) directory**. 
+**NB: Running the entire experiment takes more than 10 hour to complete. For this reason, we provide one source -> target variant (apache/kakfa -> linkedin/kafka) and 5 bugfix patches (pull requests), alongside the full dataset, to facilitate quick testing of the tool/experiment. Both the test and full projects are located in: `src/main/resources` (sample_data and completed_data) directory**. 
 
-Follow the steps below to run the experiment:
+**Follow the steps below to run the experiment:**
 
 1. Create a GitHub token and add it to `github-oauth.properties`. 
    
