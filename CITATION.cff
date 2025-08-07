@@ -13,11 +13,12 @@ authors:
 date-released: 2025-08-06
 version: 1.0.0
 keywords:
-  - patch integration
-  - software maintenance
-  - refactoring
-  - software evolution
-  - variant-aware development
+  - Patch Integration
+  - Refactoring-aware Tools
+  - Software Variants
+  - Cherry-pick Failure
+  - Structural Divergence
+  - Semantic Conflict Resolution
 type: software
 repository-code: "https://github.com/unlv-evol/RePatch"  
 license: MIT
