@@ -25,9 +25,6 @@ docker compose up --build
 In principle, you can install packages (```sudo apt update && sudo apt install -y <packages>```, no sudo password) and make changes within the containerized desktop as on a normal Ubuntu Linux OS.
 However, only the user data in ```/config``` (the user's home directory) is mapped to a Docker volume ```dev_container_repatch_data``` (see docker-compose.yml), i.e., if you delete the container, only changes wrt. the volume are persistent until you also delete the volume.
  (Checkout the corresponding pages in the Docker Desktop UI or use ```docker ps``` and ```docker volume ls``` to list your containers and volumes.)
-If more packages or other dependencies are needed for the project, you should add them (add some point) to the Dockerfile for reproducibility; then rerun the command(s) above to update the container.
-
-**Please do not forget to frequently save, commit and push all your progress on the project to the Git repository for backup!**
 
 ## Access the Remote Desktop
 

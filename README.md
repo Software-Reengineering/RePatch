@@ -190,6 +190,11 @@ Clone this project (`git clone https://github.com/unlv-evol/Repatch.git`) and op
 #### Edit configuration
 Edit the configuration tasks to have `:runIde -Pmode=integration -PdataPath=path -PevaluationProject=project`, where `path` is the location to the cloned test projects and project is the test project (target variant). **Make sure to create the `path` directory**.
 
+<p align="center">
+  <img src="figures/edit-config.png" alt="Edit Configurations" width="600"/>
+  <br>
+</p>
+
 Edit the configuration tasks in the IntelliJ IDE under `Run | Edit Configurations` (more information can be found [here](https://www.jetbrains.com/help/idea/run-debug-configuration.html#create-permanent)) to have `:runIde` and include set `-Pmode=` to `integration`.
 Then, set `-PevaluationProject=` to the project (target variant) that you want to evaluate on. For example,
 it would look like `-PevaluationProject=kafka` if you want to run integration on `linkedin/kafka`.
