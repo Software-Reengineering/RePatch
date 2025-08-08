@@ -124,7 +124,7 @@ RUN mkdir -p $HOME/repatch-integration-projects
 RUN printf "[Desktop Entry]\n\
 Type=Application\n\
 Name=IntelliJ IDEA: Repatch\n\
-Exec=/usr/local/bin/intellij $HOME/git/Repatch\n\
+Exec=/usr/local/bin/intellij $HOME/git/RePatch\n\
 Icon=/opt/idea-IC-201.7846.76/bin/idea.png\n\
 Terminal=false\n\
 Categories=Development;\n" > $HOME/Desktop/intellij-repatch.desktop && \
