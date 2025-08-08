@@ -34,7 +34,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
-      - "127.0.0.1:3306:3308" # MySQL access: mysql -h
+      - "127.0.0.1:3308:3306" # Acess MySQL on port 3308. e.g. MySQL Workbench: mysql://testuser:testuser@localhost:3308/refactoring_aware_integration_repatch
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -44,7 +44,7 @@ services:
       - "127.0.0.1:8080:80"
     environment:
       PMA_HOST: mysql
-      PMA_PORT: 3306
+      PMA_PORT: 3306 
     depends_on:
       - mysql
 
