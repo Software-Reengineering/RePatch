@@ -49,15 +49,11 @@ ENV PATH=$JAVA_HOME/bin:$PATH
 # For example, use `rustdesk-1.3.7-x86_64.deb` for x86_64 architecture.
 # For ARM64 architecture, use `rustdesk-1.3.7-aarch64.deb`.
 # The following command assumes you are using a Debian-based system (like Ubuntu).
-RUN apt-get update && apt-get install -y \
-    libxdo3 \
-	gstreamer1.0-pipewire && \
-    wget https://github.com/rustdesk/rustdesk/releases/download/1.3.7/rustdesk-1.3.7-x86_64.deb -O /tmp/rustdesk.deb && \
-    dpkg -i /tmp/rustdesk.deb && \
-    apt-get install -f -y && \
-    rm /tmp/rustdesk.deb && \
-	apt-get clean && \
-	rm -rf /var/lib/apt/lists/*
+# RUN apt-get update && apt-get install -y \
+#     libxdo3 \
+# 	gstreamer1.0-pipewire && \
+# 	apt-get clean && \
+# 	rm -rf /var/lib/apt/lists/*
 
 # Install IntelliJ IDEA Community Edition 2020.1.2
 RUN wget https://download.jetbrains.com/idea/ideaIC-2020.1.2.tar.gz -O /tmp/ideaIC.tar.gz && \
@@ -105,29 +101,29 @@ RUN mkdir -p $HOME/Desktop
 RUN mkdir -p $HOME/repatch-integration-projects
 
 # Create a desktop shortcut for RustDesk
-RUN printf "[Desktop Entry]\n\
-Type=Application\n\
-Name=RustDesk\n\
-Exec=rustdesk %%u\n\
-Icon=rustdesk\n\
-Terminal=false\n\
-Categories=Network;RemoteAccess;\n" > $HOME/Desktop/rustdesk.desktop && \
-    chmod +x $HOME/Desktop/rustdesk.desktop
+# RUN printf "[Desktop Entry]\n\
+# Type=Application\n\
+# Name=RustDesk\n\
+# Exec=rustdesk %%u\n\
+# Icon=rustdesk\n\
+# Terminal=false\n\
+# Categories=Network;RemoteAccess;\n" > $HOME/Desktop/rustdesk.desktop && \
+#     chmod +x $HOME/Desktop/rustdesk.desktop
 
 # Create a desktop shortcut for IntelliJ: RefactoringMiner
-RUN printf "[Desktop Entry]\n\
-Type=Application\n\
-Name=IntelliJ IDEA: RefactoringMiner\n\
-Exec=/usr/local/bin/intellij $HOME/git/com.github.tsantalis.refactoringminer\n\
-Icon=/opt/idea-IC-201.7846.76/bin/idea.png\n\
-Terminal=false\n\
-Categories=Development;\n" > $HOME/Desktop/intellij-refactoringminer.desktop && \
-    chmod +x $HOME/Desktop/intellij-refactoringminer.desktop
+# RUN printf "[Desktop Entry]\n\
+# Type=Application\n\
+# Name=IntelliJ IDEA: RefactoringMiner\n\
+# Exec=/usr/local/bin/intellij $HOME/git/com.github.tsantalis.refactoringminer\n\
+# Icon=/opt/idea-IC-201.7846.76/bin/idea.png\n\
+# Terminal=false\n\
+# Categories=Development;\n" > $HOME/Desktop/intellij-refactoringminer.desktop && \
+#     chmod +x $HOME/Desktop/intellij-refactoringminer.desktop
 
 # Create a desktop shortcut for IntelliJ: repatch
 RUN printf "[Desktop Entry]\n\
 Type=Application\n\
-Name=IntelliJ IDEA: repatch\n\
+Name=IntelliJ IDEA: Repatch\n\
 Exec=/usr/local/bin/intellij $HOME/git/Repatch\n\
 Icon=/opt/idea-IC-201.7846.76/bin/idea.png\n\
 Terminal=false\n\
