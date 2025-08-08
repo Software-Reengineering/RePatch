@@ -86,7 +86,6 @@ USER root
 ##### REPATCH #####
 
 # Clone repository: repatch
-# RUN git clone https://github.com/unlv-evol/repatch.git $HOME/git/RePatch
 RUN git clone https://github.com/unlv-evol/RePatch.git $HOME/git/RePatch
 
 # Setup Git identity for repatch
@@ -94,25 +93,7 @@ RUN git config --global user.email "you@example.com"
 RUN git config --global user.name "Your Name"
 RUN git config --global init.defaultBranch main
 
-##### SAMPLE DATA #####
 
-# Install Python packages for report_view.py
-# WORKDIR $HOME/git/ca.ualberta.cs.smr.repatch/samples
-# RUN python3 -m venv /opt/venv && \
-#     /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
-# ENV PATH="/opt/venv/bin:$PATH"
-
-# WORKDIR $HOME/git/ca.ualberta.cs.smr.repatch/samples/move_and_modify_method
-# RUN chmod -R +x create_git_repo.sh
-# RUN ./create_git_repo.sh
-
-# WORKDIR $HOME/git/ca.ualberta.cs.smr.repatch/samples/pull_up_and_move_method
-# RUN chmod -R +x create_git_repo.sh
-# RUN ./create_git_repo.sh
-
-# WORKDIR $HOME/git/ca.ualberta.cs.smr.repatch/samples/pull_up_and_move_method_conflict
-# RUN chmod -R +x create_git_repo.sh
-# RUN ./create_git_repo.sh
 
 ##### CREATE DESKTOP SHORTCUTS #####
 

@@ -21,7 +21,7 @@ When standard cherry-pick fails due to refactorings (e.g., method renaming or re
 
 
 
-> This work is accepted in the research track of The 25th IEEE International Conference on Source Code Analysis and Manipulation ([SCAM 2025)(https://conf.researchr.org/home/scam-2025)].
+> This work is accepted in the research track of The 25th IEEE International Conference on Source Code Analysis and Manipulation ([SCAM 2025](https://conf.researchr.org/home/scam-2025)).
 > 
 > **Paper: Refactoring-Aware Patch Integration Across Structurally Divergent Java Forks (preprint is available [here](https://arixv.abs/xxx/xxxx)**)
 
@@ -154,6 +154,7 @@ RePatch/
 - Git
 - MySQL Database >=8.0
 - MySQL Workbench or PHPMyAdmin (Optional)
+- RustDesk (Optional)
 - Intellij IDEA 2020.1.2 Community Edition
 - Python >= 3.10
 - Processor: CPU 1.18 GHZ or greater
@@ -161,7 +162,7 @@ RePatch/
 - Operating System: Linux (Ubuntu/Debian distribution)
 - Free Storage: >= 15 GB
 
-## Running RePatch
+## Installation and Running RePatch
 
 This section will get you through installation and execution of the RePatch tool. If you want to quickly reproduce the results in the paper without running the tool, kindly refer to "[Reproducing the Results in the Paper](#reproducing-the-results-in-the-paper)" section.
 
