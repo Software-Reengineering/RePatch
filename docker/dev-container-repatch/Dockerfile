@@ -44,7 +44,11 @@ RUN echo "JAVA_HOME should be: $(dirname $(dirname $(readlink -f $(which java)))
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-arm64
 ENV PATH=$JAVA_HOME/bin:$PATH
 
-# Download and install RustDesk 1.3.7
+# Download and install RustDesk 1.3.7. 
+# If you are running this on macOS or Windows, you may need to adjust the architecture in the download URL.
+# For example, use `rustdesk-1.3.7-x86_64.deb` for x86_64 architecture.
+# For ARM64 architecture, use `rustdesk-1.3.7-aarch64.deb`.
+# The following command assumes you are using a Debian-based system (like Ubuntu).
 RUN apt-get update && apt-get install -y \
     libxdo3 \
 	gstreamer1.0-pipewire && \

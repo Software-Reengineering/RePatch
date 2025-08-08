@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   dev-container-repatch:
     build:
@@ -7,9 +5,9 @@ services:
       dockerfile: Dockerfile
     container_name: dev-container-repatch
     ports:
-      - "127.0.0.1:3000:3000" # Webtop HTTP
-      - "127.0.0.1:3001:3001" # Webtop HTTPS
-      - "127.0.0.1:3002:6901" # KasmVNC direct
+      - "127.0.0.1:3000:3000" # HTTP access: https://localhost:3000/
+      - "127.0.0.1:3001:3001" # HTTPS access: https://localhost:3001/
+      - "127.0.0.1:3002:6901" # HTTPS access (direct KasmVNC, no audio): https://localhost:3002/
     security_opt:
       - seccomp=unconfined
     volumes:
@@ -30,12 +28,13 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: refactoring_aware_integration_repatch
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: testuser
+    command: --default-authentication-plugin=mysql_native_password
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
-      - "127.0.0.1:3306:3306"
+      - "127.0.0.1:3306:3308" # MySQL access: mysql -h
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
