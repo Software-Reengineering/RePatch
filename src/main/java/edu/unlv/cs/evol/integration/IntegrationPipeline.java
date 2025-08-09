@@ -11,10 +11,10 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.*;
 
-/*
- * Evaluates RePatch and IntelliMerge. If in replication mode, The pipeline will attempt to replicate IntelliMerge's
- * results. If in comparison mode, the pipeline will run a comparison on RePatch, IntelliMerge, and Git. If in
- * stats mode, it will run RefMiner and collect merge scenarios that contain refactorings.
+
+/**
+ * IntegrationPipeline is the main class for running the integration pipeline.
+ * It handles the command line arguments and starts the evaluation process.
  */
 public class IntegrationPipeline implements ApplicationStarter {
 
@@ -46,30 +46,22 @@ public class IntegrationPipeline implements ApplicationStarter {
         System.exit(0);
     }
 
-    /*
-     * Start the IntelliMerge replication.
-     */
-//    private void startIntelliMergeReplication(String path) {
-//        try {
-//            Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/intelliMerge_replication?serverTimezone=UTC",
-//                    "username", "password");
-//            IntelliMergeReplication.runIntelliMergeReplication(path);
-//            Base.close();
-//        } catch (Throwable e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
+
 
     /*
-     * Start the head to head comparison between RePatch and IntelliMerge.
-     * start integration
-     * change db frame refactoring_aware_integration
+     * Start the evaluation of RePatch on the given path and project.
+     * The evaluation will run a comparison between RePatch and IntelliMerge.
+     * It will also run RefMiner to collect merge scenarios that contain refactorings.
+     * The results will be stored in the database.
+     * @param path The path to the project to evaluate.
+     * @param evaluationProject The name of the project to evaluate.
+     * @throws EXCEPTION If an error occurs during the evaluation.                              
      */
     private void startEvaluation(String path, String evaluationProject) {
         try {
-            Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/refactoring_aware_integration_repatch?serverTimezone=UTC",
-                    "root", "student");
+            Base.open("com.mysql.jdbc.Driver", DatabaseUtils.getDatabaseUrl(),
+                    DatabaseUtils.getDatabaseUser(), DatabaseUtils.getDatabasePassword());
+
             RePatchIntegration evaluation = new RePatchIntegration();
             evaluation.runComparison(path, evaluationProject);
             Base.close();

@@ -13,33 +13,38 @@ import static org.javalite.common.Util.blank;
 
 /**
  * A class to create the integration database if it does not exist.
- * @author  Mehran Mahmoudi
+ * 
+ * @author Mehran Mahmoudi
  */
 public class DatabaseUtils {
-    private static final String CREATE_COMPARISON_SCHEMA_FILE =  "/create_integration_schema.sql";
+    private static final String CREATE_COMPARISON_SCHEMA_FILE = "/create_integration_schema.sql";
     private static final String DEFAULT_DELIMITER = ";";
     private static final String DELIMITER_KEYWORD = "DELIMITER";
-    private static final String[] COMMENT_CHARS = new String[]{"--", "#", "//"};
-
+    private static final String[] COMMENT_CHARS = new String[] { "--", "#", "//" };
+    private static final String DB_URL = System.getenv("JDBC_URL") != null ? System.getenv("JDBC_URL")
+            : "jdbc:mysql://localhost/refactoring_aware_integration_repatch?serverTimezone=UTC";
+    private static final String DB_USER = System.getenv("JDBC_USER") != null ? System.getenv("JDBC_USER") : "root";
+    private static final String DB_PASSWORD = System.getenv("JDBC_PASSWORD") != null ? System.getenv("JDBC_PASSWORD")
+            : "root";
 
     public static void createDatabase(boolean isIntegration) throws Exception {
         try {
-            if(isIntegration) {
-                Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/refactoring_aware_integration_repatch?serverTimezone=UTC",
-                        "root", "student");
+            if (isIntegration) {
+                Base.open("com.mysql.jdbc.Driver", DB_URL,
+                        DB_USER, DB_PASSWORD);
             }
 
             Base.close();
 
         } catch (InitException e) {
-            DB db = new DB("create_db").open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost?serverTimezone=UTC",
-                    "root", "student");
+            DB db = new DB("create_db").open("com.mysql.jdbc.Driver", DB_URL, DB_USER, DB_PASSWORD);
 
             String dbName;
-            if(isIntegration) {
+            if (isIntegration) {
                 dbName = "refactoring_aware_integration_repatch";
                 URL scriptInputStream = DatabaseUtils.class.getResource(CREATE_COMPARISON_SCHEMA_FILE);
-                DatabaseUtils.createDatabase(scriptInputStream.openStream(), db, "refactoring_aware_integration_repatch", dbName);
+                DatabaseUtils.createDatabase(scriptInputStream.openStream(), db,
+                        "refactoring_aware_integration_repatch", dbName);
             }
 
             db.close();
@@ -94,6 +99,15 @@ public class DatabaseUtils {
         }
         return false;
     }
-
+    
+    public static String getDatabaseUrl() {
+        return DB_URL;
+    }
+    public static String getDatabaseUser() {
+        return DB_USER;
+    }
+    public static String getDatabasePassword() {
+        return DB_PASSWORD;         
+    }
 
 }
