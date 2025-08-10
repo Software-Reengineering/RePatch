@@ -123,7 +123,7 @@ RUN mkdir -p $HOME/repatch-integration-projects
 # Create a desktop shortcut for IntelliJ: repatch
 RUN printf "[Desktop Entry]\n\
 Type=Application\n\
-Name=IntelliJ IDEA: Repatch\n\
+Name=IntelliJ IDEA: RePatch\n\
 Exec=/usr/local/bin/intellij $HOME/git/RePatch\n\
 Icon=/opt/idea-IC-201.7846.76/bin/idea.png\n\
 Terminal=false\n\
