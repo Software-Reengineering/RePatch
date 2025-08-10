@@ -41,8 +41,17 @@ RUN java -XshowSettings:properties -version
 RUN echo "JAVA_HOME should be: $(dirname $(dirname $(readlink -f $(which java))))"
 
 # Java
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-arm64
-ENV PATH=$JAVA_HOME/bin:$PATH
+RUN set -eux; \
+    JAVA_HOME_REAL="$(dirname "$(dirname "$(readlink -f "$(which javac)")")")"; \
+    echo "Detected JAVA_HOME: $JAVA_HOME_REAL"; \
+    ln -sfn "$JAVA_HOME_REAL" /usr/lib/jvm/default-java; \
+    echo "export JAVA_HOME=/usr/lib/jvm/default-java" > /etc/profile.d/java_home.sh
+
+ENV JAVA_HOME=/usr/lib/jvm/default-java
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
+
+# ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-arm64
+# ENV PATH=$JAVA_HOME/bin:$PATH
 
 # Download and install RustDesk 1.3.7. 
 # If you are running this on macOS or Windows, you may need to adjust the architecture in the download URL.
