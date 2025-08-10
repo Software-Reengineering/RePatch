@@ -104,7 +104,9 @@ it would look like `-PevaluationProject=kafka` since we want to test run integra
 1. Create a GitHub token and add it to `github-oauth.properties`. This is optional if you are running the tool using the test data.
    
 2. Edit the configuration tasks in the IntelliJ IDE under `Run | Edit Configurations` (more information can be found [here](https://www.jetbrains.com/help/idea/run-debug-configuration.html#create-permanent)) to have `:runIde` and include set `-Pmode=` to `integration` and `-PdataPath=` to `repatch-integration-projects`. Then, set `-PevaluationProject=` to the project (target variant) that you want to evaluate on. For our case, it would look like `-PevaluationProject=kafka` since we want to test run integration on `linkedin/kafka`.
-
+```
+-Pmode=integration -PdataPath=/repatch-integration-projects -PevaluationProject=linkedin
+```
    <p align="center">
       <img src="figures/edit-config.png" alt="Edit Configurations" width="600"/>
       <br>
