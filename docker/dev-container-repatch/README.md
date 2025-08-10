@@ -108,7 +108,7 @@ it would look like `-PevaluationProject=kafka` since we want to test run integra
 -Pmode=integration -PdataPath=/repatch-integration-projects -PevaluationProject=linkedin
 ```
    <p align="center">
-      <img src="figures/edit-config.png" alt="Edit Configurations" width="600"/>
+      <img src="../../figures/edit-config.png" alt="Edit Configurations" width="600"/>
       <br>
    </p>
 **NB: Running the entire experiment takes more than 10 hour to complete. For this reason, we provide one source -> target variant (apache/kakfa -> linkedin/kafka) and 5 bugfix patches (pull requests), alongside the full dataset, to facilitate quick testing of the tool/experiment. Both the test and full projects are located in: `src/main/resources` (sample_data and completed_data) directory**.
@@ -154,7 +154,7 @@ FROM refactoring_aware_integration.refactoring, patch, project
 WHERE refactoring.patch_id = patch.id AND refactoring.project_id = project.id
 ```
 <p align="center">
-  <img src="figures/top_5_refactoring_per_project_h.png" alt="System Architecture" width="600"/>
+  <img src="../../figures/top_5_refactoring_per_project_h.png" alt="System Architecture" width="600"/>
   <br>
   <em>Figure 3: Top 5 refactoring types associated with cherry-pick failures, grouped by refactoring type (X-axis) and target variant (legend). Y-axis uses a log scale to normalize project size variability and improve comparability across targets.</em>
 </p>

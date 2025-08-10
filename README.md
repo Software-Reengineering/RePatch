@@ -167,7 +167,6 @@ To ensure the successful execution and review of the `RePatch` artifact, we reco
 - MySQL Database version 8.0 or higher  
 - IntelliJ IDEA 2020.1.2 Community Edition  
 - Docker (for optional containerized setup) - Recommended 
-- Bash Shell  
 
 #### **Others**
 - MySQL Workbench or phpMyAdmin (for GUI-based database interaction)  
