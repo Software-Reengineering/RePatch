@@ -18,6 +18,7 @@ services:
       - TZ=Europe/Zurich
       - TITLE=Dev-repatch
       - JDBC_URL=jdbc:mysql://mysql:3306/refactoring_aware_integration_repatch?useSSL=false&serverTimezone=UTC
+      - JDBC_URL_WITHOUT_DATABASE=jdbc:mysql://mysql:3306/?useSSL=false&serverTimezone=UTC
       - JDBC_USER=root
       - JDBC_PASSWORD=root
       - DB_DRIVER=com.mysql.cj.jdbc.Driver
