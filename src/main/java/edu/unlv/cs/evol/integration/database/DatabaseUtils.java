@@ -15,6 +15,7 @@ import static org.javalite.common.Util.blank;
  * A class to create the integration database if it does not exist.
  * 
  * @author Mehran Mahmoudi
+ * @author Daniel Ogenrwot
  */
 public class DatabaseUtils {
     private static final String CREATE_COMPARISON_SCHEMA_FILE = "/create_integration_schema.sql";
@@ -23,6 +24,9 @@ public class DatabaseUtils {
     private static final String[] COMMENT_CHARS = new String[] { "--", "#", "//" };
     private static final String DB_URL = System.getenv("JDBC_URL") != null ? System.getenv("JDBC_URL")
             : "jdbc:mysql://localhost/refactoring_aware_integration_repatch?serverTimezone=UTC";
+    private static final String DB_URL_WITHOUT_DBNAME = System.getenv("JDBC_URL_WITHOUT_DATABASE") != null ? System.getenv("JDBC_URL_WITHOUT_DATABASE")
+            : "jdbc:mysql://localhost?serverTimezone=UTC";
+    private static final String DB_NAME = "refactoring_aware_integration_repatch";
     private static final String DB_USER = System.getenv("JDBC_USER") != null ? System.getenv("JDBC_USER") : "root";
     private static final String DB_PASSWORD = System.getenv("JDBC_PASSWORD") != null ? System.getenv("JDBC_PASSWORD")
             : "root";
@@ -37,14 +41,14 @@ public class DatabaseUtils {
             Base.close();
 
         } catch (InitException e) {
-            DB db = new DB("create_db").open("com.mysql.jdbc.Driver", DB_URL, DB_USER, DB_PASSWORD);
+            DB db = new DB("create_db").open("com.mysql.jdbc.Driver", DB_URL_WITHOUT_DBNAME, DB_USER, DB_PASSWORD);
 
             String dbName;
             if (isIntegration) {
-                dbName = "refactoring_aware_integration_repatch";
+                // dbName = "refactoring_aware_integration_repatch";
                 URL scriptInputStream = DatabaseUtils.class.getResource(CREATE_COMPARISON_SCHEMA_FILE);
                 DatabaseUtils.createDatabase(scriptInputStream.openStream(), db,
-                        "refactoring_aware_integration_repatch", dbName);
+                        "refactoring_aware_integration_repatch", DB_NAME);
             }
 
             db.close();
@@ -108,6 +112,9 @@ public class DatabaseUtils {
     }
     public static String getDatabasePassword() {
         return DB_PASSWORD;         
+    }
+    public static String getDatabaseName() {
+        return DB_NAME;
     }
 
 }
