@@ -154,24 +154,24 @@ RePatch/
 - Git
 - MySQL Database >=8.0
 - MySQL Workbench or PHPMyAdmin (Optional)
-- RustDesk (Optional)
 - Intellij IDEA 2020.1.2 Community Edition
 - Python >= 3.10
 - Processor: CPU 1.18 GHZ or greater
 - RAM: >=16 GB
 - Operating System: Linux (Ubuntu/Debian distribution)
 - Free Storage: >= 15 GB
+- Dokcer - for containerized installation
 
 ## Installation and Running RePatch
 
-This section will get you through installation and execution of the RePatch tool. If you want to quickly reproduce the results in the paper without running the tool, kindly refer to "[Reproducing the Results in the Paper](#reproducing-the-results-in-the-paper)" section.
+This section will get you through installation and execution of the RePatch tool. **If you want to quickly reproduce the results in the paper without running the tool, kindly refer to "[Reproducing the Results in the Paper](#reproducing-the-results-in-the-paper)" section**.
 
 You can run the **RePatch** tool using one of two approaches:
 
 1. **Locally on your machine**, or
 2. **Using Docker**.
 
-The instructions below guide you through running the tool locally. If you prefer a containerized setup, please refer to the [`docker`](docker) directory, which includes a dedicated README with detailed instructions. Regardless of the method you choose, ensure you have reviewed and fulfilled the [prerequisites](#prerequisites) section above.
+The instructions below explain how to run the tool locally. **For most users, we recommend using the containerized setup provided in the [docker](docker/dev-container-repatch/) directory, which includes a dedicated [README](docker/dev-container-repatch/README.md) with step-by-step guidance. This will automatically install and configure all neccessary tools**.
 
 
 ### 1. Clone and build RefactoringMiner 
@@ -187,27 +187,19 @@ You will need to add RefactoringMiner to your local maven repository to use it i
 ### 3. Build the project
 Clone this project (`git clone https://github.com/unlv-evol/Repatch.git`) and open it in IntelliJ IDE. Wait for project to be indexed by IntelliJ. To build the project, click on build tab in the IntelliJ IDE and select `Build Project` to build RePatch.
 
-#### Edit configuration
-Edit the configuration tasks to have `:runIde -Pmode=integration -PdataPath=path -PevaluationProject=project`, where `path` is the location to the cloned test projects and project is the test project (target variant). **Make sure to create the `path` directory**.
-
-<p align="center">
-  <img src="figures/edit-config.png" alt="Edit Configurations" width="600"/>
-  <br>
-</p>
-
-Edit the configuration tasks in the IntelliJ IDE under `Run | Edit Configurations` (more information can be found [here](https://www.jetbrains.com/help/idea/run-debug-configuration.html#create-permanent)) to have `:runIde` and include set `-Pmode=` to `integration`.
-Then, set `-PevaluationProject=` to the project (target variant) that you want to evaluate on. For example,
-it would look like `-PevaluationProject=kafka` if you want to run integration on `linkedin/kafka`.
-
-**NB: Running the entire experiment takes more than 10 hour to complete. For this reason, we provide one source -> target variant (apache/kakfa -> linkedin/kafka) and 5 bugfix patches (pull requests), alongside the full dataset, to facilitate quick testing of the tool/experiment. Both the test and full projects are located in: `src/main/resources` (sample_data and completed_data) directory**. 
-
 **Follow the steps below to run the experiment:**
 
-1. Create a GitHub token and add it to `github-oauth.properties`. 
+1. Create a GitHub token and add it to `github-oauth.properties`. This is optional if you are running the tool using only the [sample data](src/main/resources/sample_data/) provided.
    
-2. Add the corresponding integration project to the configuration in the IntelliJ IDE under `Run | Edit Configurations`. For example, `-PevaluationProject=kafka`. 
+2. Edit the configuration tasks in the IntelliJ IDE under `Run | Edit Configurations` (more information can be found [here](https://www.jetbrains.com/help/idea/run-debug-configuration.html#create-permanent)) to have `:runIde` and include set `-Pmode=` to `integration` and `-PdataPath=` to `repatch-integration-projects`. Then, set `-PevaluationProject=` to the project (target variant) that you want to evaluate on. For our case, it would look like `-PevaluationProject=kafka` since we want to test run integration on `linkedin/kafka`.
 
-3. RePatch will automatically clone the target variant and add the remote source variant. Once this is done stop the running project and open the project being integrated - specified in the `-PevaluationProject` with the IntelliJ IDEA in a new window. This project will be located in the directory specified in the `-PdataPath`  
+   <p align="center">
+      <img src="figures/edit-config.png" alt="Edit Configurations" width="600"/>
+      <br>
+   </p>
+**NB: Running the entire experiment takes more than 10 hour to complete. For this reason, we provide one source -> target variant (apache/kakfa -> linkedin/kafka) and 5 bugfix patches (pull requests), alongside the full dataset, to facilitate quick testing of the tool/experiment. Both the test and full projects are located in: `src/main/resources` (sample_data and completed_data) directory**.
+
+3. RePatch will automatically clone the target variant and add the remote source variant. Once this is done, stop the running project and open the project being integrated - specified in the `-PevaluationProject`(for our case, it **kafka**) with the IntelliJ IDEA in a new window. This project will be located in the directory specified in the `-PdataPath` -- for our case, it will be located in **/repatch_integration_projects**
 
 4. Wait for IntelliJ to build the cloned project, then close it.
 
@@ -215,10 +207,10 @@ it would look like `-PevaluationProject=kafka` if you want to run integration on
 
 6. Wait for the integration pipeline to finish processing that project.
 
-The data from the integration pipeline will be stored in the database, `refactoring_aware_integration_repatch`. `RePatch` will create the database if it does not already exist. Finally, use the scripts in `analysis` directory to get tables and plots from the data.
+The data from the integration pipeline will be stored in the database, `refactoring_aware_integration_repatch`. `RePatch` will create the database if it does not already exist. To access this database, go to you browser on `http://localhost:8080`. This will open phpMyAdmin - **`user`=root** and **`password` = root**. Finally, use the scripts in the [analysis](analysis) directory to get tables and plots from the data.
 
 ## Reproducing the Results in the Paper
-Use the refactoring aware patch integration dump found [here](database-dump) to populate the `refactoring_aware_integration` database. Once the database is populated, we provide SQL scripts, `CSV` files and notebook to support reproduciblity of the results reported in the paper. This can be found in the `analysis` directory and also detailed in each research question below. If you want to regenerate the CSV files, setup and populate the database with the data provide in `database-dump` directory, and run each of the SQL query below. *For easy of use, we recommend using MySQL Workbench or any MySQL DBMS client of your choice*.
+To repoduce the results in the paper, we provide full database dump found [here](database-dump) to populate the `refactoring_aware_integration` database. Once the database is populated, we provide SQL scripts, `CSV` files and notebook to support reproduciblity of the results reported in the paper. This can be found in the [analysis](analysis) directory and also detailed in each research question below. If you want to regenerate the CSV files, setup and populate the database with the data provide in `database-dump` directory, and run each of the SQL query below. *For easy of use, we recommend using MySQL Workbench or any MySQL DBMS client of your choice*.
 
 #### RQ1: How often do source variant bug-fix patches fail to apply cleanly to target variants using Git’s cherry-pick?
 This SQL query provides a summary of merge outcomes for each project fork in the dataset (**See TABLE II in the paper**). It joins the `project` and `patch` tables from the `refactoring_aware_integration` schema to aggregate merge statistics per fork, identified by `fork_name` and `fork_url`. For each fork, it calculates the total number of merge operations (`MO`), and classifies them as either successful (`Passed`) or conflicting (`Failed`) based on the `is_conflicting` flag. The results are ordered in descending order by the number of merge operations, highlighting the most actively evaluated forks.
@@ -286,12 +278,3 @@ JOIN refactoring_aware_integration.merge_result AS rep
 WHERE git.merge_tool = 'Git-CherryPick'
   AND rep.merge_tool = 'RePatch';
 ```
-
-## Contributing
-
-Contributions are welcome! Please open issues or submit pull requests for bug fixes, enhancements, or new features.
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
