@@ -147,20 +147,31 @@ RePatch/
 
 ## Getting Started
 
-### Prerequisites
+### **System Requirements**
 
-- Java 11
-- Maven 3.6 or higher
-- Git
-- MySQL Database >=8.0
-- MySQL Workbench or PHPMyAdmin (Optional)
-- Intellij IDEA 2020.1.2 Community Edition
-- Python >= 3.10
-- Processor: CPU 1.18 GHZ or greater
-- RAM: >=16 GB
-- Operating System: Linux (Ubuntu/Debian distribution)
-- Free Storage: >= 15 GB
-- Dokcer - for containerized installation
+To ensure the successful execution and review of the `RePatch` artifact, we recommend the following system configuration:
+
+#### **Hardware**
+- **Processor:** 1.18 GHz CPU or faster  
+- **RAM:** Minimum of 16 GB  
+- **Disk Space:** At least 15 GB of free storage  
+
+#### **Operating System**
+- Linux (Ubuntu or Debian-based distribution)  
+
+#### **Software Dependencies**
+- Java 11 (OpenJDK)  
+- Maven 3.6 or higher  
+- Python 3.10 or higher  
+- Git (version 2.25 or higher)  
+- MySQL Database version 8.0 or higher  
+- IntelliJ IDEA 2020.1.2 Community Edition  
+- Docker (for optional containerized setup) - Recommended 
+- Bash Shell  
+
+#### **Others**
+- MySQL Workbench or phpMyAdmin (for GUI-based database interaction)  
+- Stable internet connection  
 
 ## Installation and Running RePatch
 
