@@ -111,13 +111,13 @@ it would look like `-PevaluationProject=kafka` since we want to test run integra
    </p>
 **NB: Running the entire experiment takes more than 10 hour to complete. For this reason, we provide one source -> target variant (apache/kakfa -> linkedin/kafka) and 5 bugfix patches (pull requests), alongside the full dataset, to facilitate quick testing of the tool/experiment. Both the test and full projects are located in: `src/main/resources` (sample_data and completed_data) directory**.
 
-1. RePatch will automatically clone the target variant and add the remote source variant. Once this is done stop the running project and open the project being integrated - specified in the `-PevaluationProject`(for our case, it **kafka**) with the IntelliJ IDEA in a new window. This project will be located in the directory specified in the `-PdataPath` -- for our case, it will be located in **/config/repatch_integration_projects**
+3. RePatch will automatically clone the target variant and add the remote source variant. Once this is done stop the running project and open the project being integrated - specified in the `-PevaluationProject`(for our case, it **kafka**) with the IntelliJ IDEA in a new window. This project will be located in the directory specified in the `-PdataPath` -- for our case, it will be located in **/config/repatch_integration_projects**
 
-2. Wait for IntelliJ to build the cloned project, then close it.
+4. Wait for IntelliJ to build the cloned project, then close it.
 
-3. Now re-run the `RePatch` by clicking the `Run` button in the IntelliJ IDE.
+5. Now re-run the `RePatch` by clicking the `Run` button in the IntelliJ IDE.
 
-4. Wait for the integration pipeline to finish processing that project.
+6. Wait for the integration pipeline to finish processing that project.
 
 The data from the integration pipeline will be stored in the database, `refactoring_aware_integration_repatch`. `RePatch` will create the database if it does not already exist. To access this database, go to you browser on `http://localhost:8080`. This will open phpMyAdmin - **`user`=root** and **`password` = root**. Finally, use the scripts in the [analysis](analysis) directory to get tables and plots from the data.
 
