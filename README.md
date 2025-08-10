@@ -23,7 +23,7 @@ When standard cherry-pick fails due to refactorings (e.g., method renaming or re
 
 > This work is accepted in the research track of The 25th IEEE International Conference on Source Code Analysis and Manipulation ([SCAM 2025](https://conf.researchr.org/home/scam-2025)).
 > 
-> **Paper: Refactoring-Aware Patch Integration Across Structurally Divergent Java Forks (preprint is available [here](https://arixv.abs/xxx/xxxx)**)
+> **Paper: Refactoring-Aware Patch Integration Across Structurally Divergent Java Forks (preprint is available [here](SCAM-2025-Paper-preprint.pdf)**)
 
 ## Features
 
