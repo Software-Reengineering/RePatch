@@ -625,7 +625,7 @@ public class RePatchIntegration {
             FetchCommand fetchCommand = git.fetch();
             fetchCommand.setRemote(remoteName);
             fetchCommand.call();
-            System.out.println("-> Fetch complete.");
+            System.out.println("-> Fetch complete <-----------.");
 
         } catch (Exception e) {
             e.printStackTrace();

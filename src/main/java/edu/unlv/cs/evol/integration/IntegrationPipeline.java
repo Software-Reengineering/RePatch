@@ -27,12 +27,7 @@ public class IntegrationPipeline implements ApplicationStarter {
     public void main(@NotNull List<String> args) {
         try {
             String mode = args.get(1);
-            if(mode.equals("replication")) {
-                DatabaseUtils.createDatabase(false);
-                String path = System.getProperty("user.home") + "/" + args.get(2);
-                //startIntelliMergeReplication(path);
-            }
-            else if(mode.equals("integration")) {
+            if(mode.equals("integration")) {
                 DatabaseUtils.createDatabase(true);
                 String path = System.getProperty("user.home") +"/" + args.get(2);
                 String projectName = args.get(3);
