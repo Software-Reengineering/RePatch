@@ -203,7 +203,7 @@ Clone this project (`git clone https://github.com/unlv-evol/Repatch.git`) and op
    
 2. Edit the configuration tasks in the IntelliJ IDE under `Run | Edit Configurations` (more information can be found [here](https://www.jetbrains.com/help/idea/run-debug-configuration.html#create-permanent)) to have `:runIde` and include set `-Pmode=` to `integration` and `-PdataPath=` to `repatch-integration-projects`. Then, set `-PevaluationProject=` to the project (target variant) that you want to evaluate on. For our case, it would look like `-PevaluationProject=kafka` since we want to test run integration on `linkedin/kafka`.
 ```
--Pmode=integration -PdataPath=/repatch-integration-projects -PevaluationProject=linkedin
+-Pmode=integration -PdataPath=/repatch-integration-projects -PevaluationProject=kafka
 ```
 
    <p align="center">
