@@ -1,13 +1,4 @@
-# Refactoring-Aware Patch Integration Across Structurally Divergent Java Forks
-
-![GitHub last commit (branch)](https://img.shields.io/github/last-commit/unlv-evol/RePatch/main)
-![GitHub License](https://img.shields.io/github/license/unlv-evol/RePatch)
-[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B46484%2Fgithub.com%2Funlv-evol%2FRePatch.svg?type=shield&issueType=license)](https://app.fossa.com/projects/custom%2B46484%2Fgithub.com%2Funlv-evol%2FRePatch?ref=badge_shield&issueType=license)
-[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B46484%2Fgithub.com%2Funlv-evol%2FRePatch.svg?type=small)](https://app.fossa.com/projects/custom%2B46484%2Fgithub.com%2Funlv-evol%2FRePatch?ref=badge_small)
-[![SWH](https://archive.softwareheritage.org/badge/origin/https://doi.org/10.5281/zenodo.16756017/)](https://archive.softwareheritage.org/browse/origin/?origin_url=https://doi.org/10.5281/zenodo.16756017)
-[![SWH](https://archive.softwareheritage.org/badge/swh:1:dir:fc19605d3ac89e40bf5cac2ac84d07555da246e7/)](https://archive.softwareheritage.org/swh:1:dir:fc19605d3ac89e40bf5cac2ac84d07555da246e7;origin=https://doi.org/10.5281/zenodo.16756017;visit=swh:1:snp:fa4e4cd39c8344a1acb683767aff1f562f0572fe;anchor=swh:1:rel:47083a8f3bbc3db63ada27a31acb245972934ddb;path=/unlv-evol-RePatch-f89834b/)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16756017.svg)](https://doi.org/10.5281/zenodo.16756017)
-
+# RePatch
 
 ## Overview
 
@@ -23,7 +14,7 @@ When standard cherry-pick fails due to refactorings (e.g., method renaming or re
 
 > This work is accepted in the research track of The 25th IEEE International Conference on Source Code Analysis and Manipulation ([SCAM 2025](https://conf.researchr.org/home/scam-2025)).
 > 
-> **Paper: Refactoring-Aware Patch Integration Across Structurally Divergent Java Forks (preprint is available [here](SCAM-2025-Paper-preprint.pdf)**)
+> **Paper: Refactoring-Aware Patch Integration Across Structurally Divergent Java Forks (preprint is available [here](https://arxiv.org/abs/2508.06718)**)
 
 ## Features
 
