@@ -151,16 +151,12 @@ Clone this project (`git clone https://github.com/unlv-evol/Repatch.git`) and op
       <img src="figures/edit-config.png" alt="Edit Configurations" width="600"/>
       <br>
    </p>
-**NB: Running the entire experiment takes more than 10 hour to complete. For this reason, we provide one source -> target variant (apache/kakfa -> linkedin/kafka) and 5 bugfix patches (pull requests), alongside the full dataset, to facilitate quick testing of the tool/experiment. Both the test and full projects are located in: `src/main/resources` (sample_data and completed_data) directory**.
 
-3. RePatch will automatically clone the target variant and add the remote source variant. Once this is done, stop the
+2. RePatch will automatically clone the target variant and add the remote source variant. Once this is done, stop the
    running project and open the project being integrated - specified in the `-PevaluationProject`(for our case, it **kafka**) with the IntelliJ IDEA in a new window. This project will be located in the directory specified in the `-PdataPath` -- for our case, it will be located in **/repatch_integration_projects**
-
-4. Wait for IntelliJ to build the cloned project, then close it.
-
-5. Now re-run the `RePatch` by clicking the `Run` button in the IntelliJ IDE.
-
-6. Wait for the integration pipeline to finish processing that project.
+3. Wait for IntelliJ to build the cloned project, then close it.
+4. Now re-run the `RePatch` by clicking the `Run` button in the IntelliJ IDE.
+5. Wait for the integration pipeline to finish processing that project.
 
 The data from the integration pipeline will be stored in the database, `refactoring_aware_integration_repatch`. `RePatch` will create the database if it does not already exist. To access this database, connect to MySQL using you a tool of your choice.
 

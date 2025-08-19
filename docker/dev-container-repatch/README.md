@@ -101,7 +101,7 @@ it would look like `-PevaluationProject=kafka` since we want to test run integra
 
 **Follow the steps below to run the experiment:**
 
-1. Create a GitHub token and add it to `github-oauth.properties`. This is optional if you are running the tool using the test data.
+1. Create a GitHub token and add it to `github-oauth.properties`. This is optional if you are running the tool using the sample data.
    
 2. Edit the configuration tasks in the IntelliJ IDE under `Run | Edit Configurations` (more information can be found [here](https://www.jetbrains.com/help/idea/run-debug-configuration.html#create-permanent)) to have `:runIde` and include set `-Pmode=` to `integration` and `-PdataPath=` to `repatch-integration-projects`. Then, set `-PevaluationProject=` to the project (target variant) that you want to evaluate on. For our case, it would look like `-PevaluationProject=kafka` since we want to test run integration on `linkedin/kafka`.
 ```
@@ -111,7 +111,6 @@ it would look like `-PevaluationProject=kafka` since we want to test run integra
       <img src="../../figures/edit-config.png" alt="Edit Configurations" width="600"/>
       <br>
    </p>
-**NB: Running the entire experiment takes more than 10 hour to complete. For this reason, we provide one source -> target variant (apache/kakfa -> linkedin/kafka) and 5 bugfix patches (pull requests), alongside the full dataset, to facilitate quick testing of the tool/experiment. Both the test and full projects are located in: `src/main/resources` (sample_data and completed_data) directory**.
 
 3. RePatch will automatically clone the target variant and add the remote source variant. Once this is done stop the running project and open the project being integrated - specified in the `-PevaluationProject`(for our case, it **kafka**) with the IntelliJ IDEA in a new window. This project will be located in the directory specified in the `-PdataPath` -- for our case, it will be located in **/config/repatch_integration_projects**
 
