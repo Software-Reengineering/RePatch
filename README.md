@@ -12,7 +12,7 @@ When standard cherry-pick fails due to refactorings (e.g., method renaming or re
 
 
 
-> Read more about this work [here](https://arxiv.org/abs/2508.06718)**
+> **Read more about this work [here](https://arxiv.org/abs/2508.06718)**
 
 ## Features
 
