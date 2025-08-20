@@ -64,7 +64,7 @@ Alternatively, use RustDesk as described below.
    - Arguments: C:\Scripts\sync-clock.vbs
 
 ## Installing and Running RePatch in the Dev-Container
-This section will get you through installation and execution of the RePatch tool using docker setup. **If you want to quickly reproduce the results in the paper without running the tool, kindly refer to "[Reproducing the Results in the Paper](#reproducing-the-results-in-the-paper)" section**. 
+This section will get you through installation and execution of the RePatch tool using docker setup. 
 
 Stopping the container would be comparable to a shut down of the OS.
 This is also what Docker does if you shut down your host system or Docker itself; therefore, you may have to start the container after rebooting.
