@@ -123,3 +123,9 @@ it would look like `-PevaluationProject=kafka` since we want to test run integra
 The data from the integration pipeline will be stored in the database, `refactoring_aware_integration_repatch`. `RePatch` will create the database if it does not already exist. To access this database, go to you browser on `http://localhost:8080`. This will open phpMyAdmin - **`user`=root** and **`password` = root**. Finally, use the scripts in the [analysis](../../analysis) directory to get tables and plots from the data.
 
 ## Results
+
+Data produced by the integration pipeline is stored in the MySQL database `refactoring_aware_integration_repatch`. If it does not already exist, **RePatch** will create it automatically.
+
+To explore the results, connect to MySQL with any client (e.g., MySQL CLI, MySQL Workbench, DBeaver) and inspect the tables—especially `merge_result`, which records how **RePatch** reduced or resolved merge conflicts when `git cherry-pick` failed. The other tables also contain useful metadata and diagnostics such as *refactorings*, *conflicting files*, *conflict blocks*, etc., so give them a look as well.
+
+**If you have any questions or need assistance, please don’t hesitate to contact the TA.**

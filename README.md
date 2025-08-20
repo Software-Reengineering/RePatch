@@ -158,6 +158,11 @@ Clone this project (`git clone https://github.com/unlv-evol/Repatch.git`) and op
 4. Now re-run the `RePatch` by clicking the `Run` button in the IntelliJ IDE.
 5. Wait for the integration pipeline to finish processing that project.
 
-The data from the integration pipeline will be stored in the database, `refactoring_aware_integration_repatch`. `RePatch` will create the database if it does not already exist. To access this database, connect to MySQL using you a tool of your choice.
 
 ## Results
+
+Data produced by the integration pipeline is stored in the MySQL database `refactoring_aware_integration_repatch`. If it does not already exist, **RePatch** will create it automatically.
+
+To explore the results, connect to MySQL with any client (e.g., MySQL CLI, MySQL Workbench, DBeaver) and inspect the tables—especially `merge_result`, which records how **RePatch** reduced or resolved merge conflicts when `git cherry-pick` failed. The other tables also contain useful metadata and diagnostics such as *refactorings*, *conflicting files*, *conflict blocks*, etc., so give them a look as well.
+
+**If you have any questions or need assistance, please don’t hesitate to contact the TA.**
