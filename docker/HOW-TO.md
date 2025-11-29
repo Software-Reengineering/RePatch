@@ -1,7 +1,7 @@
 # Setting Up the RePatch MySQL Database Using phpMyAdmin
 *(For Windows, macOS, and Linux — assuming phpMyAdmin is already running)*
 
-This guide explains how to create the `RePatch` database and import the provided MySQL dump file using **phpMyAdmin** - already running within your docker enviorment
+This guide explains how to create the `RePatch` database and import the provided MySQL dump file using **phpMyAdmin** - already running within your docker enviornment
 
 ---
 ## 1. Access phpMyAdmin
@@ -40,7 +40,7 @@ Located at the top of the page.
 Under **"File to import"**:
 
 - Click **Choose File**
-- Select your file: `refactoring_aware_integration.sql.zip`
+- Select your file: `refactoring_aware_integration.sql.zip`. This file is available in the **database-dump** folder at the root of this project.
 
 ### Step 4 — Keep all default settings  
 Ensure:
