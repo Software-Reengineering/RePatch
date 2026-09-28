@@ -101,12 +101,13 @@ To ensure the successful execution and review of the `RePatch` artifact, we reco
 - Linux (Ubuntu or Debian-based distribution)  
 
 #### **Software Dependencies**
-- Java 11 (OpenJDK)  
+- Java 17 (OpenJDK) — builds and runs the plugin  
+  - JDK 11 and JDK 8 are additionally required for the evaluation and validation targets (kafka-era project SDK and paper-era benchmarks respectively); the provided containers bake all three — see [containers/README.md](containers/README.md)  
 - Maven 3.6 or higher  
 - Python 3.10 or higher  
 - Git (version 2.25 or higher)  
 - MySQL Database version 8.0 or higher  
-- IntelliJ IDEA 2020.1.2 Community Edition  
+- IntelliJ IDEA 2024.3.7 Community Edition  
 - Docker (for optional containerized setup) - Recommended 
 
 #### **Others**
