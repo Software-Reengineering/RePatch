@@ -21,12 +21,18 @@ ENV HOME=/config
 
 ##### INSTALL PACKAGES #####
 
-# Install additional tools: Git and OpenJDK 11
+# Install additional tools: Git and the JDK ladder.
+# JDK 17 builds and runs RePatch 2.0 (build.gradle pins a 17 toolchain).
+# JDK 11 is still required: the evaluation project's model pins project
+# SDK "11" (kafka-era .idea/misc.xml) and IntelliJ's SDK detector
+# auto-registers any JDK found under /usr/lib/jvm; kafka's own gradle,
+# and RefactoringMiner 2.1.0's gradle below, also predate JDK 17.
 RUN apt-get update && apt-get install -y \
     nano \
 	htop \
 	dos2unix \
     git \
+    openjdk-17-jdk \
     openjdk-11-jdk \
 	maven \
 	python3-full \
@@ -40,18 +46,22 @@ RUN java -XshowSettings:properties -version
 # Find the actual JAVA_HOME path dynamically
 RUN echo "JAVA_HOME should be: $(dirname $(dirname $(readlink -f $(which java))))"
 
-# Java
+# Java: pin default-java to 17 and record 11's real path. Resolved by glob
+# so this works on both amd64 and arm64 (…-openjdk-amd64 / -arm64). With two
+# JDKs installed, detecting JAVA_HOME from `which javac` is ambiguous, so the
+# 17 home is selected explicitly. JDK 11 stays under /usr/lib/jvm where
+# IntelliJ's SDK detector finds it for the kafka-era project SDK.
 RUN set -eux; \
-    JAVA_HOME_REAL="$(dirname "$(dirname "$(readlink -f "$(which javac)")")")"; \
-    echo "Detected JAVA_HOME: $JAVA_HOME_REAL"; \
-    ln -sfn "$JAVA_HOME_REAL" /usr/lib/jvm/default-java; \
+    JDK17="$(echo /usr/lib/jvm/java-17-openjdk-*)"; \
+    JDK11="$(echo /usr/lib/jvm/java-11-openjdk-*)"; \
+    test -x "$JDK17/bin/javac"; \
+    test -x "$JDK11/bin/javac"; \
+    ln -sfn "$JDK17" /usr/lib/jvm/default-java; \
+    ln -sfn "$JDK11" /usr/lib/jvm/java-11; \
     echo "export JAVA_HOME=/usr/lib/jvm/default-java" > /etc/profile.d/java_home.sh
 
 ENV JAVA_HOME=/usr/lib/jvm/default-java
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
-
-# ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-arm64
-# ENV PATH=$JAVA_HOME/bin:$PATH
 
 # Download and install RustDesk 1.3.7. 
 # If you are running this on macOS or Windows, you may need to adjust the architecture in the download URL.
@@ -64,11 +74,18 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 # 	apt-get clean && \
 # 	rm -rf /var/lib/apt/lists/*
 
-# Install IntelliJ IDEA Community Edition 2020.1.2
-RUN wget https://download.jetbrains.com/idea/ideaIC-2020.1.2.tar.gz -O /tmp/ideaIC.tar.gz && \
-    tar -xzf /tmp/ideaIC.tar.gz -C /opt/ && \
-    rm /tmp/ideaIC.tar.gz && \
-    ln -s /opt/idea-IC-201.7846.76/bin/idea.sh /usr/local/bin/intellij
+# Install IntelliJ IDEA Community Edition 2024.3.7 — RePatch 2.0 declares
+# sinceBuild/untilBuild 243, so 2020.1.2 would refuse to load the plugin.
+# The extracted directory carries a build number (idea-IC-243.x.y), so it is
+# discovered rather than hardcoded and exposed as the stable /opt/idea.
+ARG IDEA_VERSION=2024.3.7
+RUN set -eux; \
+    wget -q "https://download.jetbrains.com/idea/ideaIC-${IDEA_VERSION}.tar.gz" -O /tmp/ideaIC.tar.gz; \
+    mkdir -p /opt/idea-dist; \
+    tar -xzf /tmp/ideaIC.tar.gz -C /opt/idea-dist --strip-components=1; \
+    rm /tmp/ideaIC.tar.gz; \
+    ln -sfn /opt/idea-dist /opt/idea; \
+    ln -sfn /opt/idea/bin/idea.sh /usr/local/bin/intellij
 
 ##### REFACTORING MINER #####
 	
@@ -81,7 +98,10 @@ RUN git clone --branch 2.1.0 https://github.com/manuelohrndorf/com.github.tsanta
 
 # Build repository: RefactoringMiner
 WORKDIR $HOME/git/com.github.tsantalis.refactoringminer
-RUN ./gradlew jar
+# RefactoringMiner 2.1.0 ships an old gradle wrapper that cannot run on
+# JDK 17, so this one build is pinned to JDK 11. The jar itself is a plain
+# library and is consumed fine by the JDK 17 build.
+RUN JAVA_HOME=/usr/lib/jvm/java-11 PATH="/usr/lib/jvm/java-11/bin:$PATH" ./gradlew jar
 
 # Install RefactoringMiner in Maven as local libarary
 USER $PUID
@@ -90,8 +110,13 @@ USER root
 
 ##### REPATCH #####
 
-# Clone repository: repatch
-RUN git clone https://github.com/unlv-evol/RePatch.git $HOME/git/RePatch
+# Clone repository: repatch. Upstream unlv-evol/RePatch is still the 1.x
+# code (gradle 6.8 / IDEA 2020.1.2) and would not build against the
+# toolchain above, so the lab image tracks this repository's 2.0 branch.
+# Override at build time with --build-arg REPATCH_REF=<branch|tag|sha>.
+ARG REPATCH_REPO=https://github.com/Software-Reengineering/RePatch.git
+ARG REPATCH_REF=RePatch-2.0-upgrade
+RUN git clone --branch "$REPATCH_REF" "$REPATCH_REPO" $HOME/git/RePatch
 
 # Setup Git identity for repatch
 RUN git config --global user.email "you@example.com"
@@ -134,7 +159,7 @@ RUN printf "[Desktop Entry]\n\
 Type=Application\n\
 Name=IntelliJ IDEA: RePatch\n\
 Exec=/usr/local/bin/intellij $HOME/git/RePatch\n\
-Icon=/opt/idea-IC-201.7846.76/bin/idea.png\n\
+Icon=/opt/idea/bin/idea.png\n\
 Terminal=false\n\
 Categories=Development;\n" > $HOME/Desktop/intellij-repatch.desktop && \
     chmod +x $HOME/Desktop/intellij-repatch.desktop
