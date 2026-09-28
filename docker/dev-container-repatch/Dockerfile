@@ -78,9 +78,16 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 # sinceBuild/untilBuild 243, so 2020.1.2 would refuse to load the plugin.
 # The extracted directory carries a build number (idea-IC-243.x.y), so it is
 # discovered rather than hardcoded and exposed as the stable /opt/idea.
+# JetBrains ships a separate aarch64 build; the unsuffixed tarball is x86_64
+# only, so on an arm64 host (Apple Silicon) it would install an IDEA that
+# cannot run. Pick the suffix from the build platform.
 ARG IDEA_VERSION=2024.3.7
 RUN set -eux; \
-    wget -q "https://download.jetbrains.com/idea/ideaIC-${IDEA_VERSION}.tar.gz" -O /tmp/ideaIC.tar.gz; \
+    case "$(uname -m)" in \
+        aarch64|arm64) IDEA_ARCH='-aarch64' ;; \
+        *)             IDEA_ARCH='' ;; \
+    esac; \
+    wget -q "https://download.jetbrains.com/idea/ideaIC-${IDEA_VERSION}${IDEA_ARCH}.tar.gz" -O /tmp/ideaIC.tar.gz; \
     mkdir -p /opt/idea-dist; \
     tar -xzf /tmp/ideaIC.tar.gz -C /opt/idea-dist --strip-components=1; \
     rm /tmp/ideaIC.tar.gz; \
