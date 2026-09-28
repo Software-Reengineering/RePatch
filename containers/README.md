@@ -32,7 +32,7 @@ dependencies). Rebuild only after pulling changes to `containers/` or
 the pipeline source.
 
 ```bash
-git clone -b upgrade-2.0/spec1-conflicting-files https://github.com/AdamoHamou/RePatch.git
+git clone -b RePatch-2.0-upgrade https://github.com/Software-Reengineering/RePatch.git
 cd RePatch
 docker build -f containers/Dockerfile -t repatch-headless .
 ```

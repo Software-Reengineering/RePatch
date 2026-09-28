@@ -28,62 +28,47 @@ This section provides an overview of the key components and files in the RePatch
   
 ```
 RePatch/
-├── LICENSE                          # License file (e.g., GPL or similar)
-├── COPYING                          # GNU license copy (if applicable)
-├── README.md                        # Main project documentation
-├── build.gradle                     # Gradle build script
-├── settings.gradle                  # Gradle project settings
-├── gradle.properties                # Build configuration properties
-├── src/main/resources/github-oauth.properties.template  # GitHub token template (real file git-ignored)
-├── database.properties              # DB config for persisting conflict metrics
-├── .gitignore                       # Git ignore rules
-├── .github
-│   └── workflows
-│       └── gradle.yml                                  # GitHub Actions CI config
-├── docker
-│   └── dev-container-repatch                           # GUI-based dev environment
-│       ├── Dockerfile                                  # Main Docker image build script
-│       ├── docker-compose.yml                          # Compose file for webtop + services
-│       ├── README.md                                   # Setup instructions
-│       └── Dockerfiles
-├── gradle/                                             # Gradle wrapper configurations
-├── src
-│   └── main
-│       └── java/edu/unlv/cs/evol
-│            └── integration
-│                ├── IntegrationPipeline.java           # Main integration logic included
-│                ├── RePatchIntegration.java            # Core patch application logic
-│                ├── data/
-│                    ├── ComparisonResult.java          # Structure for analysis result
-│                    │   ├── ConflictBlockData.java     # Structure for conflict block info
-│                    │   ├── ConflictingFileData.java   # Structure for file-level conflict info
-│                    │   ├── FileDetails.java           # Captures full file metadata
-│                    │   └── SourceFile.java            # Represents a source variant file
-│                 └── database/
-│                    ├── ConflictBlock.java             # Database model for conflict blocks
-│                    ├── ConflictingFile.java           # Database model for conflicting files
-│                    ├── DatabaseUtils.java             # DB connection helpers
-│                    ├── FileStatistics.java            # File-level integration stats
-│                    └── MergeCommit.java               # Represents merge commit metadata
-│                 └── utils/                            # Helper functions
-│            └── repatch
-│               ├── matrix/                             # Conflict matrix modeling and resolution
-│               ├── refactoringObjects/                 # Data classes representing refactorings
-│               ├── replayOperations/                   # Classes to replay transformations
-│               ├── invertOperations/                   # Classes to invert transformations
-│               └── utils/                              # Git helpers, utility functions
-│   │   └── resources/
-│   │       ├── META-INF/                               # Plugin configuration
-│   │       ├── complete_data/                          # Real-world patch/project integration data
-│   │       ├── sample_data/                            # Sample integration scenarios
-│   │       ├── repatch_database/                       # Database configuration
-│   │       └── create_integration_schema.sql           # SQL setup script
-│   └── test/
-│       └── resources/
-│           ├── extractMethod*                          # Test cases for extract method refactorings
-│           ├── moveRename*                             # Test cases for class/method renaming/moving
-│           ├── rename*                                 # Method and class rename test data
-│           └── rePatchTestData/                        # Refactoring merge replay test cases
+├── README.md                     # Main project documentation (this file)
+├── LICENSE / COPYING             # Licensing
+├── build.gradle                  # Gradle build (IntelliJ Platform plugin, JDK 17 toolchain)
+├── settings.gradle               # Gradle project settings
+├── gradle.properties             # Build configuration properties
+├── gradlew, gradle/              # Gradle wrapper
+├── database.properties           # DB config for persisting conflict metrics
+├── .github/workflows/gradle.yml  # GitHub Actions CI
+│
+├── src/main/java/edu/unlv/cs/evol/
+│   ├── integration/                       # Evaluation pipeline (drives the experiment)
+│   │   ├── IntegrationPipeline.java       # Entry point; resolves <user.home>/<dataPath>
+│   │   ├── RePatchIntegration.java        # Core patch application logic; dataset selector
+│   │   ├── data/                          # In-memory result structures
+│   │   ├── database/                       # ActiveJDBC models + DatabaseUtils
+│   │   └── utils/                          # Git, GitHub, evaluation, repo-naming helpers
+│   └── repatch/                            # The refactoring-aware engine
+│       ├── invertOperations/               # Temporarily invert refactorings
+│       ├── replayOperations/               # Replay them after integration
+│       ├── refactoringObjects/             # Data classes representing refactorings
+│       ├── matrix/                         # Conflict matrix modeling and resolution
+│       └── utils/                          # Git helpers, utility functions
+│
+├── src/main/resources/
+│   ├── META-INF/plugin.xml                 # IntelliJ plugin configuration
+│   ├── create_integration_schema.sql       # Live schema (refactoring_aware_integration_repatch)
+│   ├── github-oauth.properties.template    # GitHub token template (real file git-ignored)
+│   ├── sample_data/                        # Small scenario set (default)
+│   └── complete_data/                      # Full paper scenario set
+├── src/test/                               # Unit + PSI round-trip tests and fixtures
+│
+├── containers/                   # RePatch 2.0 headless evaluation image (see its README)
+├── docker/
+│   ├── HOW-TO.md                 # Loading the published result dump via phpMyAdmin
+│   └── dev-container-repatch/    # GUI browser-desktop dev environment (see its README)
+├── database-dump/                # Published results dump (refactoring_aware_integration)
+├── analysis/SQL-Scripts.md       # Queries used for the paper's analysis
+├── validation/                   # Validation-study schema + analysis script
+├── scripts/                      # Golden-verdict regression check
+├── lib/                          # Bundled jars resolved by build.gradle
+└── figures/                      # Images used by the documentation
 ```
 
 ## Getting Started
@@ -123,47 +108,103 @@ You can run the **RePatch** tool using one of two approaches:
 1. **Locally on your machine**, or
 2. **Using Docker**.
 
-The instructions below explain how to run the tool locally. **For most users, we recommend using the containerized setup provided in the [docker](docker/dev-container-repatch/) directory, which includes a dedicated [README](docker/dev-container-repatch/README.md) with step-by-step guidance. This will automatically install and configure all neccessary tools**.
+### Which setup should I use?
+
+| Setup | Best for | Guide |
+|---|---|---|
+| **Headless container** (`containers/`) | Reproducing the paper's evaluation in bulk. One self-contained image: pipeline, IntelliJ and MySQL inside, driven by a `repatch` CLI. No GUI needed. | [containers/README.md](containers/README.md) |
+| **GUI dev container** (`docker/dev-container-repatch/`) | Working through a run interactively, or coursework. A full Linux desktop with IntelliJ in your browser. | [docker/dev-container-repatch/README.md](docker/dev-container-repatch/README.md) |
+| **Local install** | Developing RePatch itself against your own IntelliJ. | The steps below |
+
+**If you are unsure, use one of the two containers** — they install and configure every dependency
+for you. The remainder of this section covers the local install.
 
 
-### 1. Clone and build RefactoringMiner 
-The lastest version of RefactoringMiner is [here](https://github.com/tsantalis/RefactoringMiner). However, for this project, we used RefactoringMiner 2.2 found [here](https://github.com/manuelohrndorf/com.github.tsantalis.refactoringminer). 
+### 1. Clone and build RefactoringMiner
+
+`build.gradle` depends on **RefactoringMiner 2.1.0**, resolved with `transitive = false` so that
+only the jar itself lands on the classpath. The latest upstream RefactoringMiner lives
+[here](https://github.com/tsantalis/RefactoringMiner); this project uses the 2.1.0 tag of
+[this fork](https://github.com/manuelohrndorf/com.github.tsantalis.refactoringminer):
+
 ```sh
-git clone https://github.com/manuelohrndorf/com.github.tsantalis.refactoringminer
+git clone --branch 2.1.0 https://github.com/manuelohrndorf/com.github.tsantalis.refactoringminer
+cd com.github.tsantalis.refactoringminer
+./gradlew jar          # produces build/libs/RefactoringMiner-2.1.0.jar
 ```
-Then build RefactoringMiner with `./gradlew distzip`. It will be under build/distributions.
 
-### 2. Add RefactoringMiner to your local maven repository
-You will need to add RefactoringMiner to your local maven repository to use it in the build.gradle. You can use `mvn install:install-file -Dfile=<path-to-file>` to add it to your local maven repository. You can verify that it's been installed by checking the path `/home/username/.m2/repository/org/refactoringminer`.
+> RefactoringMiner 2.1.0 ships an old Gradle wrapper that cannot run on JDK 17. Build it with
+> JDK 11 (for example `JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 ./gradlew jar`). The
+> resulting jar is a plain library and is consumed fine by the JDK 17 build.
+
+### 2. Add RefactoringMiner to your local Maven repository
+
+`build.gradle` lists `mavenLocal()` first, so a locally installed copy takes precedence:
+
+```sh
+mvn install:install-file \
+  -Dfile=build/libs/RefactoringMiner-2.1.0.jar \
+  -DgroupId=com.github.tsantalis -DartifactId=refactoring-miner \
+  -Dversion=2.1.0 -Dpackaging=jar -DgeneratePom=true
+```
+
+Verify it installed by checking `~/.m2/repository/com/github/tsantalis/refactoring-miner/2.1.0/`.
+`-DgeneratePom=true` writes a dependency-free POM, which is what the `transitive = false` pin
+expects.
 
 ### 3. Build the project
-Clone this project (`git clone https://github.com/unlv-evol/Repatch.git`) and open it in IntelliJ IDE. Wait for project to be indexed by IntelliJ. To build the project, click on build tab in the IntelliJ IDE and select `Build Project` to build RePatch.
+Clone this project (`git clone https://github.com/Software-Reengineering/RePatch.git`) and open it in IntelliJ IDEA. Wait for project to be indexed by IntelliJ. To build the project, click on build tab in the IntelliJ IDE and select `Build Project` to build RePatch.
 
 **Follow the steps below to run the experiment:**
 
 1. Create a GitHub token and add it to `src/main/resources/github-oauth.properties` (copy `github-oauth.properties.template` in the same directory). This is optional if you are running the tool using only the [sample data](src/main/resources/sample_data/) provided — without a token the tool connects anonymously with GitHub's lower rate limit.
    
-2. Edit the configuration tasks in the IntelliJ IDE under `Run | Edit Configurations` (more information can be found [here](https://www.jetbrains.com/help/idea/run-debug-configuration.html#create-permanent)) to have `:runIde` and include set `-Pmode=` to `integration` and `-PdataPath=` to `repatch-integration-projects` (the directory under your home where evaluation clones are checked out). Then, set `-PevaluationProject=` to the project (target variant) that you want to evaluate on. For our case, it would look like `-PevaluationProject=kafka` since we want to test run integration on `linkedin/kafka`. Which scenario list is used is controlled separately by `-PdataSet=sample|complete` (defaults to `sample` = the bundled [sample data](src/main/resources/sample_data/); `complete` reads [complete_data](src/main/resources/complete_data/)). Note that `-PdataPath` does **not** switch datasets — it only names the clone directory.
-```
--Pmode=integration -PdataPath=/repatch-integration-projects -PevaluationProject=kafka
-```
+2. Edit the run configuration in IntelliJ IDEA under `Run | Edit Configurations` (see the
+   [JetBrains guide](https://www.jetbrains.com/help/idea/run-debug-configuration.html#create-permanent))
+   to run the `:runIde` task with these arguments:
+
+   ```
+   -Pmode=integration -PdataPath=repatch-integration-projects -PevaluationProject=kafka
+   ```
+
+   | Argument | Meaning |
+   |---|---|
+   | `-Pmode=integration` | The only supported mode. |
+   | `-PdataPath=` | Directory holding the evaluation clones. Resolved **relative to your home directory** (`IntegrationPipeline` joins it onto `user.home`), so this example checks out into `~/repatch-integration-projects`. Do not give a leading `/`. |
+   | `-PevaluationProject=` | The target variant to evaluate. `kafka` runs the `apache/kafka → linkedin/kafka` scenario. |
+   | `-PdataSet=` | Which scenario list to read: `sample` (default, [sample_data](src/main/resources/sample_data/)) or `complete` ([complete_data](src/main/resources/complete_data/)). |
+
+   `-PdataPath` only names the clone directory — use `-PdataSet` to switch datasets. Note that the
+   dataset *files* are named with underscores (`repatch_integration_projects`), while the clone
+   *directory* above uses hyphens; they are unrelated.
 
    <p align="center">
       <img src="figures/edit-config.png" alt="Edit Configurations" width="600"/>
       <br>
    </p>
 
-2. RePatch will automatically clone the target variant and add the remote source variant. Once this is done, stop the
-   running project and open the project being integrated - specified in the `-PevaluationProject`(for our case, it **kafka**) with the IntelliJ IDEA in a new window. This project will be located in the directory specified in the `-PdataPath` -- for our case, it will be located in **/repatch_integration_projects**
-3. Wait for IntelliJ to build the cloned project, then close it.
-4. Now re-run the `RePatch` by clicking the `Run` button in the IntelliJ IDE.
-5. Wait for the integration pipeline to finish processing that project.
+3. RePatch clones the target variant and adds the source variant as a remote. When that finishes,
+   stop the run and open the cloned evaluation project (for `kafka`, that is
+   `~/repatch-integration-projects/...`) in a **separate** IntelliJ window.
+4. Wait for IntelliJ to finish indexing and building that cloned project, then close it.
+5. Re-run `RePatch` with the `Run` button.
+6. Wait for the integration pipeline to finish processing the project.
 
 
 ## Results
 
-Data produced by the integration pipeline is stored in the MySQL database `refactoring_aware_integration_repatch`. If it does not already exist, **RePatch** will create it automatically.
+This project involves **two separate MySQL databases**. Keeping them straight avoids a lot of
+confusion:
 
-To explore the results, connect to MySQL with any client (e.g., MySQL CLI, MySQL Workbench, DBeaver) and inspect the tables—especially `merge_result`, which records how **RePatch** reduced or resolved merge conflicts when `git cherry-pick` failed. The other tables also contain useful metadata and diagnostics such as *refactorings*, *conflicting files*, *conflict blocks*, etc., so give them a look as well.
+| Database | What it is | Created by |
+|---|---|---|
+| `refactoring_aware_integration_repatch` | **Your own run's output.** Written live by the pipeline. Includes the 2.0 `refactoring_conflict` table. | Created automatically by RePatch from [create_integration_schema.sql](src/main/resources/create_integration_schema.sql) |
+| `refactoring_aware_integration` | **The published results** accompanying the paper, for browsing without running anything. | Imported by you from [database-dump/](database-dump/) — see [docker/HOW-TO.md](docker/HOW-TO.md) |
+
+To explore your own results, connect to MySQL with any client (MySQL CLI, MySQL Workbench, DBeaver,
+or the bundled phpMyAdmin) and inspect the tables — especially `merge_result`, which records how
+**RePatch** reduced or resolved merge conflicts when `git cherry-pick` failed. `refactoring`,
+`conflicting_file`, `conflict_block` and `refactoring_conflict` carry the supporting detail;
+[analysis/SQL-Scripts.md](analysis/SQL-Scripts.md) collects the queries used for the paper.
 
 **If you have any questions or need assistance, please don’t hesitate to contact the TA.**

@@ -1,4 +1,15 @@
-## SQL scripts used for that query and their description
+# SQL scripts used for the analysis
+
+> **Which database do these run against?** Every query below is qualified with
+> `refactoring_aware_integration` — the **published results dump** in
+> [database-dump/](../database-dump/), loaded as described in
+> [docker/HOW-TO.md](../docker/HOW-TO.md). That is deliberate and is *not* the same database a live
+> run writes to (`refactoring_aware_integration_repatch`). To run these against your own results,
+> change the prefix to `refactoring_aware_integration_repatch`.
+>
+> One exception: the `refactoring_conflict` query at the end covers a table introduced in RePatch
+> 2.0, so it only returns rows from a live 2.0 run's database — the published dump predates it.
+
 
 This SQL query analyzes the `refactoring` table within the `refactoring_aware_integration` schema to identify the most frequently occurring types of code refactorings. By grouping entries based on the `refactoring_type` field and counting their occurrences, the query produces a ranked list of the top 20 refactoring types, ordered by descending frequency. 
 

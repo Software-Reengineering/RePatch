@@ -1,13 +1,21 @@
 # Setting Up the RePatch MySQL Database Using phpMyAdmin
 *(For Windows, macOS, and Linux — assuming phpMyAdmin is already running)*
 
-This guide explains how to create the `RePatch` database and import the provided MySQL dump file using **phpMyAdmin** - already running within your docker enviornment
+This guide explains how to create the `refactoring_aware_integration` database and import the
+provided MySQL dump using **phpMyAdmin**, which already runs inside the docker environment.
+
+> **Which database is this?** This dump holds the **published results** that accompany the paper,
+> so you can browse them without running the pipeline. It is *not* the database your own runs write
+> to — that one is `refactoring_aware_integration_repatch`, created automatically by RePatch. The
+> two coexist; see the main [README](../README.md#results).
 
 ---
 ## 1. Access phpMyAdmin
 
-Open your browser and navigate to:
-``http://localhost:8080/phpmyadmin``. Remember, the username/password = **root/root**. After successful login, you should now see the phpMyAdmin dashboard.
+Open your browser and navigate to ``http://localhost:8080`` — phpMyAdmin is served at the root of
+that port (see `phpmyadmin` in `dev-container-repatch/docker-compose.yml`), not under a
+`/phpmyadmin` path. Log in with username/password **root/root** and you should see the phpMyAdmin
+dashboard.
 
 ---
 
@@ -69,10 +77,13 @@ On the left sidebar, expand the **refactoring_aware_integration** database and e
 - `project`
 - `patch`
 - `merge_commit`
-- `conflicting_file`
-- `conflicting_block`
-- `refactoring`
 - `merge_result`
+- `conflicting_file`
+- `conflict_block`
+- `refactoring`
+
+> These seven are the complete set in this dump. The `refactoring_conflict` table is new in
+> RePatch 2.0 and appears only in a live run's database, not here.
 
 ### Run a quick test query:
 
@@ -81,8 +92,7 @@ On the left sidebar, expand the **refactoring_aware_integration** database and e
     ```sql
     SELECT COUNT(*) FROM merge_commit;
     ```
-1. Click **Go**
-   If you see a number (e.g., 300), the database loaded correctly.
+3. Click **Go**. If you see a number (e.g., 300), the database loaded correctly.
 
 
 ## Example Use Cases
@@ -93,6 +103,7 @@ On the left sidebar, expand the **refactoring_aware_integration** database and e
     FROM merge_result mr
     JOIN patch p ON mr.patch_id = p.id
     WHERE p.number = 12660;
+    ```
 
 2. Retrieve all conflicting files associated with the merge results of patch *PR 12660*.
    ```sql
