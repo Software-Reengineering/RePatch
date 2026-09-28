@@ -45,7 +45,9 @@ CREATE TABLE IF NOT EXISTS `refactoring_aware_integration_repatch`.`patch` (
   `is_conflicting` TINYINT(1) NULL DEFAULT 0,
   `is_done` TINYINT(1) NULL DEFAULT 0,
   PRIMARY KEY (`id`, `project_id`),
-  UNIQUE INDEX `number_UNIQUE` (`number` ASC),
+  -- Composite: the same PR number legitimately recurs across projects
+  -- (e.g. one bitcoinj mainline PR evaluated against two forks).
+  UNIQUE INDEX `number_UNIQUE` (`number` ASC, `project_id` ASC),
   INDEX `fk_patches_project_idx` (`project_id` ASC),
   CONSTRAINT `fk_patches_project`
     FOREIGN KEY (`project_id`)
@@ -73,7 +75,9 @@ CREATE TABLE IF NOT EXISTS `refactoring_aware_integration_repatch`.`merge_commit
   `author_email` VARCHAR(150) NULL,
   `timestamp` LONG NULL,
   PRIMARY KEY (`id`, `project_id`, `patch_id`),
-  UNIQUE INDEX `commit_hash_UNIQUE` (`commit_hash` ASC),
+  -- Composite: the same mainline merge commit legitimately recurs across
+  -- projects (two forks of one mainline evaluate the same PR).
+  UNIQUE INDEX `commit_hash_UNIQUE` (`commit_hash` ASC, `project_id` ASC),
   INDEX `fk_merge_commit_patch_idx` (`project_id` ASC),
   CONSTRAINT `fk_merge_commit_patch`
     FOREIGN KEY (`project_id`, `patch_id`)
@@ -107,32 +111,32 @@ CREATE TABLE IF NOT EXISTS `refactoring_aware_integration_repatch`.`merge_result
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
----- -----------------------------------------------------
----- Table `refactoring_aware_integration_repatch`.`file_statistics`
----- -----------------------------------------------------
---DROP TABLE IF EXISTS `refactoring_aware_integration_repatch`.`file_statistics` ;
---
---CREATE TABLE IF NOT EXISTS `refactoring_aware_integration_repatch`.`file_statistics` (
---  `id` INT NOT NULL AUTO_INCREMENT,
---  `merge_tool` VARCHAR(45) NOT NULL,
---  `path` VARCHAR(1000) NOT NULL,
---  `auto_merged_loc` INT NOT NULL,
---  `manual_merged_loc` INT NOT NULL,
---  `same_auto_merged_loc` INT NOT NULL,
---  `same_manual_loc` INT NOT NULL,
---  `file_precision` DOUBLE NOT NULL,
---  `file_recall` DOUBLE NOT NULL,
---  `merge_result_id` INT NOT NULL,
---  `merge_commit_id` INT NOT NULL,
---  `project_id` INT NOT NULL,
---  PRIMARY KEY (`id`, `merge_result_id`, `merge_commit_id`, `project_id`),
---  INDEX `fk_file_statistics_merge_result1_idx` (`merge_result_id` ASC, `merge_commit_id` ASC, `project_id` ASC),
---  CONSTRAINT `fk_file_statistics_merge_result1`
---    FOREIGN KEY (`merge_result_id` , `merge_commit_id` , `project_id`)
---    REFERENCES `refactoring_aware_integration_repatch`.`merge_result` (`id` , `merge_commit_id` , `project_id`)
---    ON DELETE CASCADE
---    ON UPDATE CASCADE)
---ENGINE = InnoDB;
+-- -- -----------------------------------------------------
+-- -- Table `refactoring_aware_integration_repatch`.`file_statistics`
+-- -- -----------------------------------------------------
+-- DROP TABLE IF EXISTS `refactoring_aware_integration_repatch`.`file_statistics` ;
+-- 
+-- CREATE TABLE IF NOT EXISTS `refactoring_aware_integration_repatch`.`file_statistics` (
+--   `id` INT NOT NULL AUTO_INCREMENT,
+--   `merge_tool` VARCHAR(45) NOT NULL,
+--   `path` VARCHAR(1000) NOT NULL,
+--   `auto_merged_loc` INT NOT NULL,
+--   `manual_merged_loc` INT NOT NULL,
+--   `same_auto_merged_loc` INT NOT NULL,
+--   `same_manual_loc` INT NOT NULL,
+--   `file_precision` DOUBLE NOT NULL,
+--   `file_recall` DOUBLE NOT NULL,
+--   `merge_result_id` INT NOT NULL,
+--   `merge_commit_id` INT NOT NULL,
+--   `project_id` INT NOT NULL,
+--   PRIMARY KEY (`id`, `merge_result_id`, `merge_commit_id`, `project_id`),
+--   INDEX `fk_file_statistics_merge_result1_idx` (`merge_result_id` ASC, `merge_commit_id` ASC, `project_id` ASC),
+--   CONSTRAINT `fk_file_statistics_merge_result1`
+--     FOREIGN KEY (`merge_result_id` , `merge_commit_id` , `project_id`)
+--     REFERENCES `refactoring_aware_integration_repatch`.`merge_result` (`id` , `merge_commit_id` , `project_id`)
+--     ON DELETE CASCADE
+--     ON UPDATE CASCADE)
+-- ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -208,6 +212,36 @@ CREATE TABLE IF NOT EXISTS `refactoring_aware_integration_repatch`.`refactoring`
     REFERENCES `refactoring_aware_integration_repatch`.`merge_commit` (`id` , `project_id`, `patch_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `refactoring_aware_integration_repatch`.`refactoring_conflict`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `refactoring_aware_integration_repatch`.`refactoring_conflict` ;
+
+CREATE TABLE IF NOT EXISTS `refactoring_aware_integration_repatch`.`refactoring_conflict` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `left_old_path`  VARCHAR(1000) NULL,
+  `left_new_path`  VARCHAR(1000) NULL,
+  `right_old_path` VARCHAR(1000) NULL,
+  `right_new_path` VARCHAR(1000) NULL,
+  `left_refactoring_type`   VARCHAR(100)  NULL,
+  `right_refactoring_type`  VARCHAR(100)  NULL,
+  `left_refactoring_detail`  VARCHAR(2000) NULL,
+  `right_refactoring_detail` VARCHAR(2000) NULL,
+  `merge_result_id` INT NOT NULL,
+  `merge_commit_id` INT NOT NULL,
+  `project_id` INT NOT NULL,
+  `patch_id` INT NOT NULL,
+  PRIMARY KEY (`id`, `merge_result_id`, `merge_commit_id`, `project_id`, `patch_id`),
+  INDEX `fk_refactoring_conflict_merge_result1_idx`
+    (`merge_result_id` ASC, `merge_commit_id` ASC, `project_id` ASC, `patch_id` ASC),
+  CONSTRAINT `fk_refactoring_conflict_merge_result1`
+    FOREIGN KEY (`merge_result_id`, `merge_commit_id`, `project_id`, `patch_id`)
+    REFERENCES `refactoring_aware_integration_repatch`.`merge_result`
+      (`id`, `merge_commit_id`, `project_id`, `patch_id`)
+    ON DELETE CASCADE ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 

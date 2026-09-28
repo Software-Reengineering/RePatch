@@ -49,6 +49,9 @@ out/
 ##############################
 .settings/
 bin/
+# ... but the container CLI scripts are sources, not build output
+!containers/bin/
+!containers/bin/**
 tmp/
 .metadata
 .classpath
@@ -280,3 +283,9 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+
+.intellijPlatform/
+.prerun_*
+
+# Real GitHub token (template is committed instead)
+src/main/resources/github-oauth.properties
